@@ -18,6 +18,7 @@ import com.example.projet.R
 import com.example.projet.USERNAME
 import com.google.android.material.snackbar.Snackbar
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -77,7 +78,7 @@ class GalleryFragment : Fragment() {
                 }
 
                 val body: RequestBody = RequestBody.create(
-                    MediaType.parse("application/json; charset=utf-8"),
+                    "application/json; charset=utf-8".toMediaTypeOrNull(),
                     registrationForm1.toString()
                 );
                 postRequest(root, "http://ns328061.ip-37-187-112.eu:5000", body);
@@ -92,8 +93,8 @@ class GalleryFragment : Fragment() {
     fun postRequest(root: View, postUrl: String?, postBody: RequestBody?) {
         val client = OkHttpClient()
         val request: Request = Request.Builder()
-                .url(postUrl)
-                .post(postBody)
+                .url(postUrl.toString())
+                .post(postBody!!)
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
                 .build()
@@ -107,7 +108,7 @@ class GalleryFragment : Fragment() {
 
             override fun onResponse(call: Call, response: Response) {
                 try {
-                    val responseString: String? = response.body()?.string()
+                    val responseString: String? = response.body?.string()
 
                     when (responseString) {
                         "success" -> {

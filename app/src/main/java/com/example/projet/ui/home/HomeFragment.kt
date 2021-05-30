@@ -1,15 +1,21 @@
 package com.example.projet.ui.home
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,13 +23,14 @@ import com.example.projet.*
 import com.example.projet.ui.gallery.GalleryFragment
 import com.google.android.material.snackbar.Snackbar
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import kotlin.String as String1
 
-@Suppress("NAME_SHADOWING", "DEPRECATION", "LocalVariableName")
+
 class HomeFragment : Fragment() {
 
 
@@ -33,14 +40,16 @@ class HomeFragment : Fragment() {
     private var parentActuel:Int =0
     private var enfantActuel:Int =0
 
+    @SuppressLint("ResourceType")
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        accesLocal = AccesLocal(activity?.applicationContext)
+        accesLocal = AccesLocal(context)
         accesLocal.suppressionTotal()
         val buttonRefresh: Button = root.findViewById(R.id.Refresh_list)
         val buttonNumber: Button = root.findViewById(R.id.BoutonNombre)
@@ -53,10 +62,11 @@ class HomeFragment : Fragment() {
         catch (e: JSONException) {e.printStackTrace();}
 
         val body: RequestBody = RequestBody.create(
-            MediaType.parse("application/json; charset=utf-8"),
+            "application/json; charset=utf-8".toMediaTypeOrNull(),
             registrationForm1.toString()
         )
         requestSynchro("http://ns328061.ip-37-187-112.eu:5000", body)
+        Thread.sleep(4_000)
         if(accesLocal.number ==0) {accesLocal.ajout(Question(0, 1, "Quest ce que cette app ?", 0,"ADMINN"))}
         recyclerView = root.findViewById(R.id.recyclerview)
         recyclerView.setHasFixedSize(true)
@@ -67,7 +77,21 @@ class HomeFragment : Fragment() {
         )
         recyclerView.addItemDecoration(itemDecoration)
         recyclerView.itemAnimator = SlideUpItemAnimator()
-        recyclerView.adapter = activity?.applicationContext?.let { RandomNumListAdapter(it) }
+        recyclerView.adapter = context?.applicationContext?.let { RandomNumListAdapter(it) }
+
+        requestSynchro("http://ns328061.ip-37-187-112.eu:5000", body)     //<-Refresh my local database
+        recyclerView.adapter=null
+        recyclerView.layoutManager = LinearLayoutManager(root.context)
+        recyclerView.adapter = context?.applicationContext?.let { RandomNumListAdapter(it) }
+        recyclerView.adapter?.notifyDataSetChanged()
+/*
+            Snackbar.make(View,"Base de données rafraichit", Snackbar.LENGTH_LONG).setAction(
+                "Action",
+                null
+            ).show()
+
+ */
+
         this.configureOnClickRecyclerView(textView)
         reponseQuestion.setOnClickListener {
             val fragment = GalleryFragment()
@@ -78,7 +102,7 @@ class HomeFragment : Fragment() {
             catch (e: JSONException) {e.printStackTrace();}
 
             val body: RequestBody = RequestBody.create(
-                MediaType.parse("application/json; charset=utf-8"),
+                "application/json; charset=utf-8".toMediaTypeOrNull(),
                 registrationForm1.toString()
             )
             requestSynchro("http://ns328061.ip-37-187-112.eu:5000", body)
@@ -103,7 +127,7 @@ class HomeFragment : Fragment() {
          catch (e: JSONException) {e.printStackTrace();}
 
          val body: RequestBody = RequestBody.create(
-             MediaType.parse("application/json; charset=utf-8"),
+             "application/json; charset=utf-8".toMediaTypeOrNull(),
              registrationForm1.toString()
          )
             requestSynchro("http://ns328061.ip-37-187-112.eu:5000", body)     //<-Refresh my local database
@@ -125,7 +149,7 @@ class HomeFragment : Fragment() {
             catch (e: JSONException) {e.printStackTrace();}
 
             val body: RequestBody = RequestBody.create(
-                MediaType.parse("application/json; charset=utf-8"),
+                "application/json; charset=utf-8".toMediaTypeOrNull(),
                 registrationForm1.toString()
             )
 
@@ -187,7 +211,7 @@ class HomeFragment : Fragment() {
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    val str_response = response.body()!!.string()
+                    val str_response = response.body!!.string()
                     val jsonstr = JSONObject(str_response)
                     val ToutsLesEntree: JSONArray = jsonstr.getJSONArray("resultat")
                     accesLocal = AccesLocal(activity?.applicationContext)
@@ -233,7 +257,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val str_response = response.body()!!.string()
+                val str_response = response.body!!.string()
                 val jsonstr = JSONObject(str_response)
                 val ToutesLesEntree: JSONArray = jsonstr.getJSONArray("nombre")
                 Thread.sleep(3_000)

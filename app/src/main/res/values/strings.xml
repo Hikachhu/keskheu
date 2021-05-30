@@ -19,16 +19,16 @@
     <string name="action_EntreeUser">Ecrivez</string>
 
     <string name="menu_home">Accueil</string>
-    <string name="menu_gallery">Questions</string>
-    <string name="menu_slideshow">Les questions</string>
+    <string name="menu_gallery">Reponse</string>
+    <string name="menu_slideshow">Compte</string>
     <string name="textview">TextView</string>
-    <string name="button">Synchronisation</string>
+    <string name="button">Rafraichir</string>
     <string name="Test_Bouton">Nombre question</string>
 
     <string name="Creation">Creation</string>
     <string name="Connection">Connection</string>
 
-    <string name="Reponse">Faire une réponse</string>
+    <string name="Reponse">Poser une question</string>
     <string name="todo">TODO</string>
     <string name="EntreeUser">Value</string>
 </resources>
