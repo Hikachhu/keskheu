@@ -1,4 +1,4 @@
-package com.projet;
+package com.keskheu.recyclerView;
 
 import android.view.View;
 

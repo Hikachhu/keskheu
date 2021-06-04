@@ -1,4 +1,4 @@
-package com.projet.ui.slideshow
+package com.keskheu.screens.slideshow
 
 import android.os.Bundle
 import android.util.Log
@@ -11,9 +11,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.projet.R
+import com.keskheu.R
 import com.google.android.material.snackbar.Snackbar
-import com.projet.USERNAME
+import com.keskheu.USERNAME
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody

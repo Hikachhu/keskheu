@@ -1,4 +1,4 @@
-package com.projet;
+package com.keskheu.database;
 
 import android.os.Parcel
 import android.os.Parcelable

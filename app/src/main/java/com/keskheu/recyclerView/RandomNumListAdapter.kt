@@ -1,4 +1,4 @@
-package com.projet
+package com.keskheu.recyclerView
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.keskheu.database.AccesLocal
+import com.keskheu.database.Question
+import com.keskheu.R
 
 
 class RandomNumListAdapter(context: Context) : RecyclerView.Adapter<RecyclerViewHolder>() {
@@ -29,21 +32,21 @@ class RandomNumListAdapter(context: Context) : RecyclerView.Adapter<RecyclerView
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        if(Etat==0) holder.view.text = accesLocal.ListeFils(0)[position].Contenu.toString()+"\nQuestion posée par: "+accesLocal.ListeFils(0)[position].Username.toString()+"\nIl y a "+accesLocal.NombreDeRep( accesLocal.ListeFils(0)[position].Fils)+" réponses disponibles"
+        if(Etat==0) holder.view.text = accesLocal.listeFils(0)[position].Contenu.toString()+"\nQuestion posée par: "+accesLocal.listeFils(0)[position].Username.toString()+"\nIl y a "+accesLocal.nombreDeRep( accesLocal.listeFils(0)[position].Fils)+" réponses disponibles"
         else {
-            enfantActuel=accesLocal.NumFils(parentActuel,positionnement+1)
-            Log.e("onBindViewHolder","On cherche les enfants de "+accesLocal.NumFils(parentActuel,positionnement+1))
-            val Result: ArrayList<Question> =accesLocal.ListeFils(accesLocal.NumFils(parentActuel,positionnement+1))
+            enfantActuel=accesLocal.numFils(parentActuel,positionnement+1)
+            Log.e("onBindViewHolder","On cherche les enfants de "+accesLocal.numFils(parentActuel,positionnement+1))
+            val Result: ArrayList<Question> =accesLocal.listeFils(accesLocal.numFils(parentActuel,positionnement+1))
             Log.e("onBindViewHolder","Result taille:"+Result.size+" position="+position)
-            holder.view.text = Result[position].Contenu.toString()+"\nQuestion posée par: "+Result[position].Username.toString()+"\nIl y a "+accesLocal.NombreDeRep(Result[position].Fils).toString()+" réponses disponibles"
+            holder.view.text = Result[position].Contenu.toString()+"\nQuestion posée par: "+Result[position].Username.toString()+"\nIl y a "+accesLocal.nombreDeRep(Result[position].Fils).toString()+" réponses disponibles"
         }
     }
 
     override fun getItemCount(): Int {
-        val valeur:Int=accesLocal.getNumber(accesLocal.NumFils(parentActuel,positionnement+1))
+        val valeur:Int=accesLocal.getNumber(accesLocal.numFils(parentActuel,positionnement+1))
         Log.e("Nombre Taille:","taille="+valeur+" Etat:"+Etat)
         return if(Etat==0) accesLocal.getNumber(0)
-        else accesLocal.getNumber(accesLocal.NumFils(parentActuel,positionnement+1))
+        else accesLocal.getNumber(accesLocal.numFils(parentActuel,positionnement+1))
     }
 
     class ViewHolder(itemView: View, onNoteListener: OnNoteListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {

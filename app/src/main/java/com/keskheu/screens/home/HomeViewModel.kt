@@ -1,4 +1,4 @@
-package com.projet.ui.home
+package com.keskheu.screens.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
