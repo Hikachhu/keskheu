@@ -1,4 +1,4 @@
-package com.example.projet.ui.home
+package com.projet.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

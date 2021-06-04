@@ -1,18 +1,18 @@
-package com.example.projet.ui.slideshow
+package com.projet.ui.slideshow
 
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.projet.AccesLocal
-import com.example.projet.Question
+import com.projet.AccesLocal
+import com.projet.Question
 
 class SlideshowViewModel(application:Application) : AndroidViewModel(application) {
 
 
-    private lateinit var accesLocal : AccesLocal
-    private lateinit var question : Question
+    private var accesLocal : AccesLocal
+    private var question : Question
     private lateinit var mContext: Context
     private val applicationContext: Context = application.applicationContext
 

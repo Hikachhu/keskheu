@@ -1,26 +1,22 @@
-package com.example.projet;
+package com.projet;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class AccesLocal {
-    private String nomBase="bdKeskheu.sqlite";
-    private Integer versionBase=1;
-    private MySQLiteOpenHelper accesBD;
+    private final MySQLiteOpenHelper accesBD;
     private SQLiteDatabase bd;
 
     public AccesLocal(Context context){
-        accesBD=new MySQLiteOpenHelper(context,nomBase,null,versionBase);
-        this.accesBD=accesBD;
-        this.bd=bd;
+        String nomBase = "bdKeskheu.sqlite";
+        int versionBase = 1;
+        accesBD=new MySQLiteOpenHelper(context, nomBase,null, versionBase);
     }
 
     public void ajout(@NotNull Question question){
@@ -38,21 +34,22 @@ public class AccesLocal {
         courser.move(position);
 
         if (!courser.isAfterLast()) {
-            Integer Parent = courser.getInt(0);
-            Integer Fils = courser.getInt(1);
+            int Parent = courser.getInt(0);
+            int Fils = courser.getInt(1);
             String Contenu = courser.getString(2);
-            Integer rang = courser.getInt(3);
+            int rang = courser.getInt(3);
             String Username = courser.getString(4);
             question = new Question(Parent, Fils, Contenu, rang,Username);
         }
+        assert question != null;
         Log.e("NumFils","Numéro de fils:"+question.getFils()+" position = "+position);
         courser.close();
         return question.getFils();
     }
 
     public ArrayList<Question> ListeFils(int NumParent) {
-        ArrayList<Question> ListeQuestion = new ArrayList<Question>();
-        Question question =null;
+        ArrayList<Question> ListeQuestion = new ArrayList<>();
+        Question question;
         String req = "SELECT  * FROM Questions where Parent=" + NumParent;
         bd = accesBD.getReadableDatabase();
         Cursor courser = bd.rawQuery(req, null);
@@ -61,10 +58,10 @@ public class AccesLocal {
 
         while(!(courser.isAfterLast())) {
             Log.e("TAG","Taille ="+courser.getPosition());
-            Integer Parent = courser.getInt(0);
-            Integer Fils = courser.getInt(1);
+            int Parent = courser.getInt(0);
+            int Fils = courser.getInt(1);
             String Contenu = courser.getString(2);
-            Integer rang = courser.getInt(3);
+            int rang = courser.getInt(3);
             String Username = courser.getString(4);
             question = new Question(Parent, Fils, Contenu, rang,Username);
             ListeQuestion.add(question);
@@ -75,48 +72,32 @@ public class AccesLocal {
         return ListeQuestion;
     }
 
-    @SuppressLint("WrongConstant")
-    public ArrayList<Question> All() {
-        ArrayList<Question> ListeQuestion = new ArrayList<Question>();
-        Question question =null;
-        String req = "SELECT  * FROM Questions";
+    public int NombreDeRep(int NumActuel){
+        Question question;
+        String req = "SELECT  * FROM Questions where Parent=" + NumActuel;
         bd = accesBD.getReadableDatabase();
         Cursor courser = bd.rawQuery(req, null);
-        courser.move(1);
-        Log.e("TAG","Taille ="+courser.getCount()+" position = "+courser.getPosition());
-
-        while((courser!=null)) {
-            Log.e("TAG","Taille ="+courser.getPosition());
-            Integer Parent = courser.getInt(0);
-            Integer Fils = courser.getInt(1);
-            String Contenu = courser.getString(2);
-            Integer rang = courser.getInt(3);
-            String Username = courser.getString(4);
-            question = new Question(Parent, Fils, Contenu, rang,Username);
-            ListeQuestion.add(question);
-            courser.moveToNext();
-        }
-
+        int quantite=courser.getCount();
+        Log.e("NombreDeRep", String.valueOf(quantite));
         courser.close();
-        return ListeQuestion;
+        return quantite;
     }
-
 
     public Question rcmpDenied(){
         bd=accesBD.getReadableDatabase();
         Question question =null;
         String req ="select * from Questions";
-        Cursor curseur = bd.rawQuery(req,null);
-        curseur.moveToLast();
-        if(!curseur.isAfterLast()){
-            Integer Parent=curseur.getInt(0);
-            Integer Fils=curseur.getInt(1);
-            String Contenu=curseur.getString(2);
-            Integer rang=curseur.getInt(3);
-            String Username = curseur.getString(4);
+        Cursor cursor = bd.rawQuery(req,null);
+        cursor.moveToLast();
+        if(!cursor.isAfterLast()){
+            int Parent=cursor.getInt(0);
+            int Fils=cursor.getInt(1);
+            String Contenu=cursor.getString(2);
+            int rang=cursor.getInt(3);
+            String Username = cursor.getString(4);
             question=new Question(Parent,Fils,Contenu,rang,Username);
         }
-        curseur.close();
+        cursor.close();
         return question;
     }
 
@@ -127,10 +108,10 @@ public class AccesLocal {
         Cursor courser = bd.rawQuery(req,null);
         courser.move(number);
         if(!courser.isAfterLast()){
-            Integer Parent=courser.getInt(0);
-            Integer Fils=courser.getInt(1);
+            int Parent=courser.getInt(0);
+            int Fils=courser.getInt(1);
             String Contenu=courser.getString(2);
-            Integer rang=courser.getInt(3);
+            int rang=courser.getInt(3);
             String Username=courser.getString(4);
             question=new Question(Parent,Fils,Contenu,rang,Username);
         }

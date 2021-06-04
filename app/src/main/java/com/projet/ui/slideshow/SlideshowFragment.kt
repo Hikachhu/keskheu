@@ -1,4 +1,4 @@
-package com.example.projet.ui.slideshow
+package com.projet.ui.slideshow
 
 import android.os.Bundle
 import android.util.Log
@@ -11,10 +11,12 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.projet.R
+import com.projet.R
 import com.google.android.material.snackbar.Snackbar
+import com.projet.USERNAME
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -56,12 +58,10 @@ class SlideshowFragment : Fragment() {
                 e.printStackTrace()
             }
 
-            val body:RequestBody  = RequestBody.create(
-                "application/json; charset=utf-8".toMediaTypeOrNull(),
-                registrationForm1.toString()
-            );
+            val body:RequestBody  = registrationForm1.toString()
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull());
 
-            postRequest(root, "http://ns328061.ip-37-187-112.eu:5000", body, username);
+            postRequest("http://ns328061.ip-37-187-112.eu:5000", body, username);
 
         }
 
@@ -77,18 +77,16 @@ class SlideshowFragment : Fragment() {
                 e.printStackTrace()
             }
 
-            val body:RequestBody  = RequestBody.create(
-                "application/json; charset=utf-8".toMediaTypeOrNull(),
-                registrationForm1.toString()
-            )
+            val body:RequestBody  = registrationForm1.toString()
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-            postRequest(root, "http://ns328061.ip-37-187-112.eu:5000", body, username);
+            postRequest("http://ns328061.ip-37-187-112.eu:5000", body, username);
 
         }
 
         return root
     }
-    private fun postRequest(root: View, postUrl: String?, postBody: RequestBody?, username: String?) {
+    private fun postRequest(postUrl: String?, postBody: RequestBody?, username: String?) {
         val client = OkHttpClient()
         val request: Request = Request.Builder()
             .url(postUrl.toString())
@@ -117,13 +115,11 @@ class SlideshowFragment : Fragment() {
                     if (responseString == "Invalide") {
 
                         view?.let {
-                            if (responseString != null) {
-                                Snackbar.make(it, "Mot de passe invalide", Snackbar.LENGTH_LONG)
-                                    .setAction(
-                                        "Action",
-                                        null
-                                    ).show()
-                            }
+                            Snackbar.make(it, "Mot de passe invalide", Snackbar.LENGTH_LONG)
+                                .setAction(
+                                    "Action",
+                                    null
+                                ).show()
                         }
                     } else {
 
@@ -132,7 +128,7 @@ class SlideshowFragment : Fragment() {
                                 Snackbar.make(it, "Mot de passe Valide", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
                         }
                         if (username != null) {
-                            com.example.projet.USERNAME = username
+                            USERNAME = username
                         }
 
                     }

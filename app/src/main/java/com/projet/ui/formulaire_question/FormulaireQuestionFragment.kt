@@ -1,4 +1,4 @@
-package com.example.projet.ui.gallery
+package com.projet.ui.formulaire_question
 
 import android.os.Bundle
 import android.text.InputType
@@ -12,21 +12,22 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.projet.AccesLocal
-import com.example.projet.Question
-import com.example.projet.R
-import com.example.projet.USERNAME
+import com.projet.AccesLocal
+import com.projet.Question
+import com.projet.R
+import com.projet.USERNAME
 import com.google.android.material.snackbar.Snackbar
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 
 
-class GalleryFragment : Fragment() {
+class FormulaireQuestionFragment : Fragment() {
 
-    private lateinit var galleryViewModel: GalleryViewModel
+    private lateinit var galleryViewModel: FormulaireQuestionViewModel
     private lateinit var accesLocal : AccesLocal
     private lateinit var question : Question
     private var NumeroQuestion:Int = 0
@@ -36,8 +37,8 @@ class GalleryFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         galleryViewModel =
-                ViewModelProvider(this).get(GalleryViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_gallery, container, false)
+                ViewModelProvider(this).get(FormulaireQuestionViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_formulaire_question, container, false)
         val textView: TextView = root.findViewById(R.id.text_gallery)
         galleryViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
@@ -55,8 +56,8 @@ class GalleryFragment : Fragment() {
         }
 
         boutton.setOnClickListener {
-            view ->Snackbar.make(view,"Test de connection",Snackbar.LENGTH_LONG).setAction("Action", null).show()
-            if(com.example.projet.USERNAME!="Unconnected"){
+                view ->Snackbar.make(view,"Test de connection",Snackbar.LENGTH_LONG).setAction("Action", null).show()
+            if(USERNAME !="Unconnected"){
                 accesLocal = AccesLocal(activity?.applicationContext)
                 val QuestionUtilisation: Question = Question(
                     NumeroQuestion,
@@ -77,12 +78,10 @@ class GalleryFragment : Fragment() {
                     e.printStackTrace();
                 }
 
-                val body: RequestBody = RequestBody.create(
-                    "application/json; charset=utf-8".toMediaTypeOrNull(),
-                    registrationForm1.toString()
-                );
-                postRequest(root, "http://ns328061.ip-37-187-112.eu:5000", body);
-                Snackbar.make(view,"Question ajoutée avec succès en tant que "+com.example.projet.USERNAME,Snackbar.LENGTH_LONG).setAction("Action", null).show()
+                val body: RequestBody = registrationForm1.toString()
+                    .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull());
+                postRequest("http://ns328061.ip-37-187-112.eu:5000", body);
+                Snackbar.make(view,"Question ajoutée avec succès en tant que "+ USERNAME,Snackbar.LENGTH_LONG).setAction("Action", null).show()
             }else{
                 Snackbar.make(view,"Veuillez vous connecter",Snackbar.LENGTH_LONG).setAction("Action", null).show()
             }
@@ -90,7 +89,7 @@ class GalleryFragment : Fragment() {
         }
         return root
     }
-    fun postRequest(root: View, postUrl: String?, postBody: RequestBody?) {
+    fun postRequest(postUrl: String?, postBody: RequestBody?) {
         val client = OkHttpClient()
         val request: Request = Request.Builder()
                 .url(postUrl.toString())
@@ -102,7 +101,6 @@ class GalleryFragment : Fragment() {
             override fun onFailure(call: Call, e: IOException) {
                 call.cancel()
                 Log.d("FAIL", e.message.toString())
-                val responseText: TextView = root.findViewById(R.id.Reponse_Serveur)
                 //    responseText.text = "Failed to Connect to Server. Please Try Again."
             }
 

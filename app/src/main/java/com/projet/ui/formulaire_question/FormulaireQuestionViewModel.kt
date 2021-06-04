@@ -1,10 +1,10 @@
-package com.example.projet.ui.gallery
+package com.projet.ui.formulaire_question
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class GalleryViewModel : ViewModel() {
+class FormulaireQuestionViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "Formulaire de question:"

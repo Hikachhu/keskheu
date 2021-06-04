@@ -31,4 +31,14 @@
     <string name="Reponse">Poser une question</string>
     <string name="todo">TODO</string>
     <string name="EntreeUser">Value</string>
+    <string name="bienvenu_sur_keskheu">Bienvenu sur Keskheu</string>
+    <string name="l_cran_d_accueil_permet_de_voir_la_liste_des_questions">L\'écran d\'accueil permet de voir la liste des questions</string>
+    <string name="appuyez_pour_continuer_et_acc_der_l_application">Appuyez pour continuer et accéder à l\'application</string>
+    <string name="pour_voir_les_r_ponses_cliquez_sur_une_question">Pour voir les réponses, cliquez sur une question</string>
+    <string name="pour_poster_une_question_ou_une_r_ponse_veuillez_vous_connectez">Pour poster une question ou une réponse, veuillez vous connectez</string>
+    <string name="acc_der_keskheu">Accéder à Keskheu</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.projet.ui.home.HomeFragment"
+        android:name="com.projet.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.projet.ui.gallery.GalleryFragment"
+        android:name="com.projet.ui.formulaire_question.FormulaireQuestionFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_formulaire_question" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.example.projet.ui.slideshow.SlideshowFragment"
+        android:name="com.projet.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>

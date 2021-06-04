@@ -9,10 +9,6 @@
             android:icon="@drawable/icone_home"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/point_interro"
-            android:title="@string/menu_gallery" />
-        <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/icone_reponse"
             android:title="@string/menu_slideshow" />

@@ -1,29 +1,25 @@
-package com.example.projet.ui.home
+package com.projet.ui.home
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.projet.*
-import com.example.projet.ui.gallery.GalleryFragment
 import com.google.android.material.snackbar.Snackbar
+import com.projet.*
+import com.projet.ui.formulaire_question.FormulaireQuestionFragment
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -61,10 +57,8 @@ class HomeFragment : Fragment() {
         try {registrationForm1.put("subject", "lire_tous");}
         catch (e: JSONException) {e.printStackTrace();}
 
-        val body: RequestBody = RequestBody.create(
-            "application/json; charset=utf-8".toMediaTypeOrNull(),
-            registrationForm1.toString()
-        )
+        val body: RequestBody = registrationForm1.toString()
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         requestSynchro("http://ns328061.ip-37-187-112.eu:5000", body)
         Thread.sleep(4_000)
         if(accesLocal.number ==0) {accesLocal.ajout(Question(0, 1, "Quest ce que cette app ?", 0,"ADMINN"))}
@@ -94,52 +88,25 @@ class HomeFragment : Fragment() {
 
         this.configureOnClickRecyclerView(textView)
         reponseQuestion.setOnClickListener {
-            val fragment = GalleryFragment()
-            val arguments = Bundle()
-            arguments.putInt("NumeroQuestion", enfantActuel)
+            arguments?.putInt("NumeroQuestion", enfantActuel)
             val registrationForm1 =  JSONObject()
             try {registrationForm1.put("subject", "lire_tous");}
             catch (e: JSONException) {e.printStackTrace();}
 
-            val body: RequestBody = RequestBody.create(
-                "application/json; charset=utf-8".toMediaTypeOrNull(),
-                registrationForm1.toString()
-            )
+            val body: RequestBody = registrationForm1.toString()
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
             requestSynchro("http://ns328061.ip-37-187-112.eu:5000", body)
-            fragment.arguments = arguments
-            requireFragmentManager().beginTransaction()
-                .replace((requireView().parent as ViewGroup).id, fragment)
-                .addToBackStack(null)
-                .commit()
+            val fragment = FormulaireQuestionFragment()
+            val arguments = Bundle()
+            changeScreen(fragment, arguments)
 
         }
 
 
         buttonRefresh.setOnClickListener {
-
-                view ->Snackbar.make(
-            view,
-            "En beta",
-            Snackbar.LENGTH_LONG
-        ).setAction("Action", null).show()
-        val registrationForm1  =  JSONObject()
-         try {registrationForm1.put("subject", "lire_tous");}
-         catch (e: JSONException) {e.printStackTrace();}
-
-         val body: RequestBody = RequestBody.create(
-             "application/json; charset=utf-8".toMediaTypeOrNull(),
-             registrationForm1.toString()
-         )
-            requestSynchro("http://ns328061.ip-37-187-112.eu:5000", body)     //<-Refresh my local database
-         Thread.sleep(1_000)
-         recyclerView.adapter=null
-         recyclerView.layoutManager = LinearLayoutManager(root.context)
-         recyclerView.adapter = activity?.applicationContext?.let { RandomNumListAdapter(it) }
-         recyclerView.adapter?.notifyDataSetChanged()
-         Snackbar.make(view, "Base de données rafraichit", Snackbar.LENGTH_LONG).setAction(
-             "Action",
-             null
-         ).show()
+            view ->Snackbar.make(view,"En beta",Snackbar.LENGTH_LONG).setAction("Action", null).show()
+            refreshRecyclerView(root)
+            Snackbar.make(view, "Base de données rafraichit", Snackbar.LENGTH_LONG).setAction("Action",null).show()
 
         }
 
@@ -147,19 +114,36 @@ class HomeFragment : Fragment() {
             val registrationForm1 =  JSONObject()
             try {registrationForm1.put("subject", "nombre");}
             catch (e: JSONException) {e.printStackTrace();}
-
-            val body: RequestBody = RequestBody.create(
-                "application/json; charset=utf-8".toMediaTypeOrNull(),
-                registrationForm1.toString()
-            )
-
-            view?.let { it1 -> Snackbar.make(it1, "Post creation body, wait", Snackbar.LENGTH_LONG).setAction(
-                "Action",
-                null
-            ).show() }
+            val body: RequestBody = registrationForm1.toString()
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            view?.let { it1 -> Snackbar.make(it1, "Post creation body, wait", Snackbar.LENGTH_LONG).setAction("Action", null).show() }
             requestNumber("http://ns328061.ip-37-187-112.eu:5000", body)
         }
         return root
+    }
+
+    private fun changeScreen(fragment: Fragment, arguments :Bundle){
+        fragment.arguments = arguments
+        parentFragmentManager.beginTransaction()
+            .replace((requireView().parent as ViewGroup).id, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun refreshRecyclerView(root:View){
+
+        val registrationForm1  =  JSONObject()
+        try {registrationForm1.put("subject", "lire_tous");}
+        catch (e: JSONException) {e.printStackTrace();}
+        val body: RequestBody = registrationForm1.toString()
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        requestSynchro("http://ns328061.ip-37-187-112.eu:5000", body)     //<-Refresh my local database
+        Thread.sleep(1_000)
+        recyclerView.adapter=null
+        recyclerView.layoutManager = LinearLayoutManager(root.context)
+        recyclerView.adapter = activity?.applicationContext?.let { RandomNumListAdapter(it) }
+        recyclerView.adapter?.notifyDataSetChanged()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -209,7 +193,6 @@ class HomeFragment : Fragment() {
                     call.cancel()
                     Log.d("FAIL", e.message.toString())
                 }
-
                 override fun onResponse(call: Call, response: Response) {
                     val str_response = response.body!!.string()
                     val jsonstr = JSONObject(str_response)
@@ -223,7 +206,6 @@ class HomeFragment : Fragment() {
                             val Contenu = Actual.getString(2)
                             val Rang: Int = Actual.getInt(3)
                             val Username: kotlin.String? = Actual.getString(4)
-
                             Log.e(
                                 "Ajout données",
                                 "taille Donnes:" + accesLocal.number + "Ajout de :" + Fils.toString()
