@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.keskheu.database.AccesLocal
-import com.keskheu.database.Question
+import com.keskheu.api.Question
 import com.keskheu.R
 import com.keskheu.USERNAME
 import okhttp3.*

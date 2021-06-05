@@ -1,4 +1,4 @@
-package com.keskheu.database;
+package com.keskheu.api
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -9,8 +9,7 @@ data class Question(var Parent: Int, var Fils: Int, var Contenu: String?, var Ra
             parcel.readInt(),
             parcel.readString(),
             parcel.readInt(),
-            parcel.readString()){
-    }
+            parcel.readString())
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         TODO("Not yet implemented")

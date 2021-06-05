@@ -3,6 +3,7 @@ package com.keskheu.screens.home
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,14 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.keskheu.*
 import com.keskheu.database.AccesLocal
-import com.keskheu.database.Question
+import com.keskheu.api.Question
 import com.keskheu.recyclerView.RandomNumListAdapter
 import com.keskheu.recyclerView.SlideUpItemAnimator
 import com.keskheu.screens.formulaire_question.FormulaireQuestionFragment
 import org.json.JSONException
 import org.json.JSONObject
-import com.keskheu.api.Recuperation.requestNumber
-import com.keskheu.api.Recuperation.requestSynchro
+import com.keskheu.api.Recuperation
 import com.keskheu.recyclerView.ItemClickSupport
 
 
@@ -33,6 +33,10 @@ class HomeFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var parentActuel:Int =0
     private var enfantActuel:Int =0
+    private var systemApi=Recuperation
+
+
+    private var listeQuestion= arrayListOf<Question>()
 
     @SuppressLint("ResourceType")
     @RequiresApi(Build.VERSION_CODES.M)
@@ -48,11 +52,14 @@ class HomeFragment : Fragment() {
         val buttonRefresh: Button = root.findViewById(R.id.Refresh_list)
         val buttonNumber: Button = root.findViewById(R.id.BoutonNombre)
         val reponseQuestion: Button = root.findViewById(R.id.ReponseQuestion)
-
         val textView: TextView = root.findViewById(R.id.text_home)
+        Log.e("ping",systemApi.ping())
+        Thread.sleep(900)
+        //Log.e("Nombre question", systemApi.requestNumber().toString())
 
-
-        requestSynchro(requireContext())
+        listeQuestion=systemApi.requestSynchro()
+        Log.e("Recup",listeQuestion.toString())
+        listeQuestion.forEach { accesLocal.ajout(it) }
         Thread.sleep(4_000)
         if(accesLocal.number ==0) {accesLocal.ajout(Question(0, 1, "Quest ce que cette app ?", 0,"ADMINN"))}
         recyclerView = root.findViewById(R.id.recyclerview)
@@ -65,8 +72,8 @@ class HomeFragment : Fragment() {
         recyclerView.addItemDecoration(itemDecoration)
         recyclerView.itemAnimator = SlideUpItemAnimator()
         recyclerView.adapter = context?.applicationContext?.let { RandomNumListAdapter(it) }
-
-        requestSynchro(requireContext())     //<-Refresh my local database
+        listeQuestion=systemApi.requestSynchro()
+        listeQuestion.forEach { accesLocal.ajout(it) }
         recyclerView.adapter=null
         recyclerView.layoutManager = LinearLayoutManager(root.context)
         recyclerView.adapter = context?.applicationContext?.let { RandomNumListAdapter(it) }
@@ -78,7 +85,8 @@ class HomeFragment : Fragment() {
             val registrationForm1 =  JSONObject()
             try {registrationForm1.put("subject", "lire_tous");}
             catch (e: JSONException) {e.printStackTrace();}
-            requestSynchro(requireContext())
+            listeQuestion=systemApi.requestSynchro()
+            listeQuestion.forEach { accesLocal.ajout(it) }
             val fragment = FormulaireQuestionFragment()
             val arguments = Bundle()
             changeScreen(fragment, arguments)
@@ -96,7 +104,8 @@ class HomeFragment : Fragment() {
         buttonNumber.setOnClickListener {
 
             view?.let { it1 -> Snackbar.make(it1, "Post creation body, wait", Snackbar.LENGTH_LONG).setAction("Action", null).show() }
-            requestNumber()
+            listeQuestion=systemApi.requestSynchro()
+            listeQuestion.forEach { accesLocal.ajout(it) }
         }
         return root
     }
@@ -108,7 +117,8 @@ class HomeFragment : Fragment() {
             .commit()
     }
     private fun refreshRecyclerView(root:View){
-        requestSynchro(requireContext())
+        listeQuestion=systemApi.requestSynchro()
+        listeQuestion.forEach { accesLocal.ajout(it) }
         Thread.sleep(1_000)
         recyclerView.adapter=null
         recyclerView.layoutManager = LinearLayoutManager(root.context)

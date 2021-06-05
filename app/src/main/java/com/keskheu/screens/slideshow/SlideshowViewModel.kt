@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.keskheu.database.AccesLocal
-import com.keskheu.database.Question
+import com.keskheu.api.Question
 
 class SlideshowViewModel(application:Application) : AndroidViewModel(application) {
 

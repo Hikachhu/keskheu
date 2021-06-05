@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.keskheu.database.AccesLocal
-import com.keskheu.database.Question
+import com.keskheu.api.Question
 import com.keskheu.R
 
 

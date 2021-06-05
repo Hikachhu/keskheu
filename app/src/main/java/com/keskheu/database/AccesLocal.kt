@@ -1,18 +1,28 @@
 package com.keskheu.database
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import com.keskheu.api.Question
 import java.util.*
 
 class AccesLocal(context: Context) {
     private val accesBD: MySQLiteOpenHelper
     private lateinit var bd: SQLiteDatabase
+    @SuppressLint("Recycle")
     fun ajout(question: Question) {
         bd = accesBD.writableDatabase
-        val req = ("insert into Questions(Parent,Fils,Contenu,rang,Username) values "+
-                "(" + question.Parent + "," + question.Fils + ", \"" + question.Contenu + "\"," + question.Rang + ",\"" + question.Username + "\");")
-        bd.execSQL(req)
+        val recherche="select * from Questions where fils=${question.Fils}"
+        val cursor = bd.rawQuery(recherche, null)
+        if(cursor.count==0){
+            val req = ("insert into Questions(Parent,Fils,Contenu,rang,Username) values "+
+                    "(" + question.Parent + "," + question.Fils + ", \"" + question.Contenu + "\"," + question.Rang + ",\"" + question.Username + "\");")
+            bd.execSQL(req)
+            Log.e("Ajout","succes ajout de $question")
+        }else{
+            Log.e("ajout","Valeur deja existante")
+        }
     }
 
     fun numFils(NumParent: Int, position: Int): Int {
