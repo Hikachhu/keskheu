@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -16,15 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.keskheu.*
-import com.keskheu.database.AccesLocal
 import com.keskheu.api.Question
+import com.keskheu.api.Recuperation
+import com.keskheu.database.AccesLocal
+import com.keskheu.recyclerView.ItemClickSupport
 import com.keskheu.recyclerView.RandomNumListAdapter
-import com.keskheu.recyclerView.SlideUpItemAnimator
 import com.keskheu.screens.formulaire_question.FormulaireQuestionFragment
 import org.json.JSONException
 import org.json.JSONObject
-import com.keskheu.api.Recuperation
-import com.keskheu.recyclerView.ItemClickSupport
 
 
 class HomeFragment : Fragment() {
@@ -45,39 +46,34 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.e("Affichage","Debut affichage Home")
 
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         accesLocal = context?.let { AccesLocal(it) }!!
         accesLocal.suppressionTotal()
+
+        Log.e("Debug","0")
         val buttonRefresh: Button = root.findViewById(R.id.Refresh_list)
         val buttonNumber: Button = root.findViewById(R.id.BoutonNombre)
         val reponseQuestion: Button = root.findViewById(R.id.ReponseQuestion)
         val textView: TextView = root.findViewById(R.id.text_home)
-        Log.e("ping",systemApi.ping())
         Thread.sleep(900)
-        //Log.e("Nombre question", systemApi.requestNumber().toString())
-
+        Log.e("Debug","1")
         listeQuestion=systemApi.requestSynchro()
+        Log.e("Debug","2")
         Log.e("Recup",listeQuestion.toString())
+        Log.e("Debug","3")
         listeQuestion.forEach { accesLocal.ajout(it) }
-        Thread.sleep(4_000)
+        Log.e("Debug","4")
+
         if(accesLocal.number ==0) {accesLocal.ajout(Question(0, 1, "Quest ce que cette app ?", 0,"ADMINN"))}
         recyclerView = root.findViewById(R.id.recyclerview)
-        recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(root.context)
-        val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(
-            context,
-            DividerItemDecoration.VERTICAL
-        )
-        recyclerView.addItemDecoration(itemDecoration)
-        recyclerView.itemAnimator = SlideUpItemAnimator()
+        val resId: Int =R.anim.layout_animation_fall_down
+
+        val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation( context, resId)
+        recyclerView.layoutAnimation = animation
         recyclerView.adapter = context?.applicationContext?.let { RandomNumListAdapter(it) }
-        listeQuestion=systemApi.requestSynchro()
-        listeQuestion.forEach { accesLocal.ajout(it) }
-        recyclerView.adapter=null
-        recyclerView.layoutManager = LinearLayoutManager(root.context)
-        recyclerView.adapter = context?.applicationContext?.let { RandomNumListAdapter(it) }
-        recyclerView.adapter?.notifyDataSetChanged()
 
         this.configureOnClickRecyclerView(textView)
         reponseQuestion.setOnClickListener {

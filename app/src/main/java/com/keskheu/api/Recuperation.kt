@@ -24,9 +24,6 @@ object Recuperation {
     }
 
     fun requestSynchro(): ArrayList<Question> {
-        while (DernierAppel+3<(System.currentTimeMillis()/1000).toInt()){
-            Thread.sleep(250)
-        }
         val recupAPI = RetourApi(0)
         DernierAppel= (System.currentTimeMillis()/1000).toInt()
         Log.e("Appel", DernierAppel.toString())
@@ -97,8 +94,6 @@ object Recuperation {
             .build()
 
         client.run {
-
-
             newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     call.cancel()
