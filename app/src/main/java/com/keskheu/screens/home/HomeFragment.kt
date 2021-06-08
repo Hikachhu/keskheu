@@ -13,11 +13,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.keskheu.*
+import com.keskheu.R
 import com.keskheu.api.Question
 import com.keskheu.api.Recuperation
 import com.keskheu.database.AccesLocal
@@ -35,7 +34,7 @@ class HomeFragment : Fragment() {
     private var parentActuel:Int =0
     private var enfantActuel:Int =0
     private var systemApi=Recuperation
-
+    private lateinit var reponseQuestion: Button
 
     private var listeQuestion= arrayListOf<Question>()
 
@@ -52,19 +51,13 @@ class HomeFragment : Fragment() {
         accesLocal = context?.let { AccesLocal(it) }!!
         accesLocal.suppressionTotal()
 
-        Log.e("Debug","0")
         val buttonRefresh: Button = root.findViewById(R.id.Refresh_list)
         val buttonNumber: Button = root.findViewById(R.id.BoutonNombre)
-        val reponseQuestion: Button = root.findViewById(R.id.ReponseQuestion)
+        reponseQuestion = root.findViewById(R.id.ReponseQuestion)
         val textView: TextView = root.findViewById(R.id.text_home)
         Thread.sleep(900)
-        Log.e("Debug","1")
         listeQuestion=systemApi.requestSynchro()
-        Log.e("Debug","2")
-        Log.e("Recup",listeQuestion.toString())
-        Log.e("Debug","3")
         listeQuestion.forEach { accesLocal.ajout(it) }
-        Log.e("Debug","4")
 
         if(accesLocal.number ==0) {accesLocal.ajout(Question(0, 1, "Quest ce que cette app ?", 0,"ADMINN"))}
         recyclerView = root.findViewById(R.id.recyclerview)
@@ -92,7 +85,7 @@ class HomeFragment : Fragment() {
 
         buttonRefresh.setOnClickListener {
             view ->Snackbar.make(view,"En beta",Snackbar.LENGTH_LONG).setAction("Action", null).show()
-            refreshRecyclerView(root)
+            refreshRecyclerView()
             Snackbar.make(view, "Base de données rafraichit", Snackbar.LENGTH_LONG).setAction("Action",null).show()
 
         }
@@ -112,13 +105,9 @@ class HomeFragment : Fragment() {
             .addToBackStack(null)
             .commit()
     }
-    private fun refreshRecyclerView(root:View){
+    private fun refreshRecyclerView() {
         listeQuestion=systemApi.requestSynchro()
         listeQuestion.forEach { accesLocal.ajout(it) }
-        Thread.sleep(1_000)
-        recyclerView.adapter=null
-        recyclerView.layoutManager = LinearLayoutManager(root.context)
-        recyclerView.adapter = activity?.applicationContext?.let { RandomNumListAdapter(it) }
         recyclerView.adapter?.notifyDataSetChanged()
 
     }
@@ -127,9 +116,6 @@ class HomeFragment : Fragment() {
     private fun configureOnClickRecyclerView(textView: TextView) {
         ItemClickSupport.addTo(recyclerView, R.layout.frame_textview).setOnItemClickListener { recyclerView, position, _ ->
 
-            recyclerView.adapter=null
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.adapter = activity?.applicationContext?.let { RandomNumListAdapter(it) }
             (recyclerView.adapter as RandomNumListAdapter?)?.Etat=1
             (recyclerView.adapter as RandomNumListAdapter?)?.positionnement=position
             (recyclerView.adapter as RandomNumListAdapter?)?.parentActuel=parentActuel
@@ -138,6 +124,7 @@ class HomeFragment : Fragment() {
             textView.text=accesLocal.rcmpNumbers(accesLocal.numFils(parentActuel, position + 1)).toString()
             parentActuel=accesLocal.numFils(parentActuel, position + 1)
             enfantActuel=parentActuel
+            reponseQuestion.text="Répondre à la question actuelle"
         }
     }
 
