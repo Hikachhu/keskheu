@@ -1,8 +1,11 @@
 package com.keskheu.screens.home
 
+import android.R.layout
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +13,11 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -23,8 +28,12 @@ import com.keskheu.database.AccesLocal
 import com.keskheu.recyclerView.ItemClickSupport
 import com.keskheu.recyclerView.RandomNumListAdapter
 import com.keskheu.screens.formulaire_question.FormulaireQuestionFragment
+import com.squareup.picasso.Picasso
+import drewcarlson.coingecko.CoinGeckoClient
+import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
+import java.net.URL
 
 
 class HomeFragment : Fragment() {
@@ -35,10 +44,9 @@ class HomeFragment : Fragment() {
     private var enfantActuel:Int =0
     private var systemApi=Recuperation
     private lateinit var reponseQuestion: Button
-
     private var listeQuestion= arrayListOf<Question>()
 
-    @SuppressLint("ResourceType")
+    @SuppressLint("ResourceType", "SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,21 +61,32 @@ class HomeFragment : Fragment() {
 
         val buttonRefresh: Button = root.findViewById(R.id.Refresh_list)
         val buttonNumber: Button = root.findViewById(R.id.BoutonNombre)
+        val imageAffiche: ImageView = root.findViewById(R.id.imageActuel)
         reponseQuestion = root.findViewById(R.id.ReponseQuestion)
         val textView: TextView = root.findViewById(R.id.text_home)
-        Thread.sleep(900)
+        textView.text="Bienvenu sur Kesheu"
         listeQuestion=systemApi.requestSynchro()
         listeQuestion.forEach { accesLocal.ajout(it) }
 
         if(accesLocal.number ==0) {accesLocal.ajout(Question(0, 1, "Quest ce que cette app ?", 0,"ADMINN"))}
         recyclerView = root.findViewById(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(root.context)
+        var adapter =context?.applicationContext?.let { RandomNumListAdapter(it) }
+        recyclerView.adapter = adapter
         val resId: Int =R.anim.layout_animation_fall_down
-
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation( context, resId)
         recyclerView.layoutAnimation = animation
-        recyclerView.adapter = context?.applicationContext?.let { RandomNumListAdapter(it) }
 
+        lifecycleScope.launch {
+            val data = CoinGeckoClient.create()
+
+            try {
+                Picasso.with(context).load("").into(imageAffiche);
+            } catch (e: Exception) {
+                Log.e("Error Message", e.message.toString())
+                e.printStackTrace()
+            }
+        }
         this.configureOnClickRecyclerView(textView)
         reponseQuestion.setOnClickListener {
             arguments?.putInt("NumeroQuestion", enfantActuel)
@@ -112,6 +131,7 @@ class HomeFragment : Fragment() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun configureOnClickRecyclerView(textView: TextView) {
         ItemClickSupport.addTo(recyclerView, R.layout.frame_textview).setOnItemClickListener { recyclerView, position, _ ->
@@ -124,7 +144,7 @@ class HomeFragment : Fragment() {
             textView.text=accesLocal.rcmpNumbers(accesLocal.numFils(parentActuel, position + 1)).toString()
             parentActuel=accesLocal.numFils(parentActuel, position + 1)
             enfantActuel=parentActuel
-            reponseQuestion.text="Répondre à la question actuelle"
+            reponseQuestion.text="Répondre à la question"
         }
     }
 

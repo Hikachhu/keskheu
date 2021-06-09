@@ -26,7 +26,7 @@ class AccesLocal(context: Context) {
     }
 
     fun numFils(NumParent: Int, position: Int): Int {
-        var question: Question? = null
+        var question: Question? =null
         val req = "SELECT  * FROM Questions where Parent=$NumParent"
         bd = accesBD.readableDatabase
         val cursor = bd.rawQuery(req, null)
@@ -39,10 +39,8 @@ class AccesLocal(context: Context) {
             val username = cursor.getString(4)
             question = Question(parent, fils, contenu, rang, username)
         }
-        assert(question != null)
-        Log.e("NumFils", "Numéro de fils:" + question!!.Fils + " position = " + position)
         cursor.close()
-        return question.Fils
+        return question!!.Fils
     }
 
     fun listeFils(NumParent: Int): ArrayList<Question> {
@@ -52,9 +50,7 @@ class AccesLocal(context: Context) {
         bd = accesBD.readableDatabase
         val cursor = bd.rawQuery(req, null)
         cursor.move(1)
-        Log.e("ListeFils", "Taille =" + cursor.count + " position = " + cursor.position)
         while (!cursor.isAfterLast) {
-            Log.e("TAG", "Taille =" + cursor.position)
             val parent = cursor.getInt(0)
             val fils = cursor.getInt(1)
             val contenu = cursor.getString(2)
@@ -73,7 +69,6 @@ class AccesLocal(context: Context) {
         bd = accesBD.readableDatabase
         val courser = bd.rawQuery(req, null)
         val quantite = courser.count
-        Log.e("NombreDeRep", quantite.toString())
         courser.close()
         return quantite
     }

@@ -1,5 +1,6 @@
 package com.keskheu.screens.formulaire_question
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -12,10 +13,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
-import com.keskheu.database.AccesLocal
-import com.keskheu.api.Question
 import com.keskheu.R
 import com.keskheu.USERNAME
+import com.keskheu.api.Question
+import com.keskheu.database.AccesLocal
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -34,8 +35,7 @@ class FormulaireQuestionFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        galleryViewModel =
-                ViewModelProvider(this).get(FormulaireQuestionViewModel::class.java)
+        galleryViewModel = ViewModelProvider(this).get(FormulaireQuestionViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_formulaire_question, container, false)
         val textView: TextView = root.findViewById(R.id.text_gallery)
         galleryViewModel.text.observe(viewLifecycleOwner, {
@@ -43,6 +43,7 @@ class FormulaireQuestionFragment : Fragment() {
         })
         val username = root.findViewById<EditText>(R.id.Question_utilisateur)
         val boutton = root.findViewById<Button>(R.id.button_entree_utlisateur)
+        val fichierJoindre = root.findViewById<Button>(R.id.fichierJoint)
 
         username.inputType = InputType.TYPE_CLASS_TEXT or
                 InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
@@ -51,6 +52,13 @@ class FormulaireQuestionFragment : Fragment() {
         if (bundle != null) {
              numeroQuestion = bundle.getInt("NumeroQuestion")
             Log.e("Recup Bundle", "NumeroQuestion:$numeroQuestion")
+        }
+
+        fichierJoindre.setOnClickListener{
+            val intent = Intent()
+            intent.type = "*/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(intent, 0)
         }
 
         boutton.setOnClickListener {

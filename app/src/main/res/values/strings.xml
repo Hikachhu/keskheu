@@ -2,8 +2,8 @@
     <string name="app_name">Kesk\'heu</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Application Kesk\'heu</string>
-    <string name="nav_header_subtitle">PST 3A</string>
+    <string name="nav_header_title">Votre nom d\'utilisateur:</string>
+    <string name="nav_header_subtitle">NOM CONNECTE</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Paramètres</string>
 
@@ -30,7 +30,7 @@
 
     <string name="Reponse">Poser une question</string>
     <string name="todo">TODO</string>
-    <string name="EntreeUser">Value</string>
+    <string name="EntreeUser">Username</string>
     <string name="bienvenu_sur_keskheu">Bienvenu sur Keskheu</string>
     <string name="l_cran_d_accueil_permet_de_voir_la_liste_des_questions">L\'écran d\'accueil permet de voir la liste des questions</string>
     <string name="appuyez_pour_continuer_et_acc_der_l_application">Appuyez pour continuer et accéder à l\'application</string>
@@ -42,4 +42,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="informationapplication">InformationApplication</string>
+    <string name="entrez_un_mdp">Entrez un mdp</string>
+    <string name="joindre_un_fichier">Joindre un fichier</string>
 </resources>

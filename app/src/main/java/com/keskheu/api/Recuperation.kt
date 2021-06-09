@@ -86,44 +86,60 @@ object Recuperation {
         val body: RequestBody = registrationForm1.toString()
             .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val client = OkHttpClient()
+
+
         val request: Request = Request.Builder()
             .url(ipServer)
             .post(body)
             .header("Accept", "application/json")
             .header("Content-Type", "application/json")
+            .addHeader("Connection","close")
             .build()
-
-        client.run {
-            newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    call.cancel()
-                    Log.d("FAIL", e.message.toString())
-                }
-                override fun onResponse(call: Call, response: Response) {
-                    val str_response = response.body!!.string()
-                    val jsonstr = JSONObject(str_response)
-                    val ToutsLesEntree: JSONArray = jsonstr.getJSONArray("resultat")
-                    try {
-                        for (i in 0 until ToutsLesEntree.length()) {
-                            val Actual = ToutsLesEntree.getJSONArray(i)
-                            val Parent: Int = Actual.getInt(0)
-                            val Fils: Int = Actual.getInt(1)
-                            val Contenu = Actual.getString(2)
-                            val Rang: Int = Actual.getInt(3)
-                            val Username: String? = Actual.getString(4)
-                            listQuestion.add(Question(Parent, Fils, Contenu, Rang,Username))
-
-                        }
-                        ret.retour=1
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
+            client.run {
+                newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        call.cancel()
+                        Log.d("FAIL", e.message.toString())
                     }
-                }
-            })
-        }
-        while (ret.retour!=1){
-            Thread.sleep(300)
-        }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        try {
+                            val str_response = response.body!!.string()
+                            val jsonstr = JSONObject(str_response)
+                            val ToutsLesEntree: JSONArray = jsonstr.getJSONArray("resultat")
+                            try {
+                                for (i in 0 until ToutsLesEntree.length()) {
+                                    val Actual = ToutsLesEntree.getJSONArray(i)
+                                    val Parent: Int = Actual.getInt(0)
+                                    val Fils: Int = Actual.getInt(1)
+                                    val Contenu = Actual.getString(2)
+                                    val Rang: Int = Actual.getInt(3)
+                                    val Username: String? = Actual.getString(4)
+                                    listQuestion.add(
+                                        Question(
+                                            Parent,
+                                            Fils,
+                                            Contenu,
+                                            Rang,
+                                            Username
+                                        )
+                                    )
+
+                                }
+                                ret.retour = 1
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+                        } catch (e: Exception) {
+                            ret.retour = 1
+                            Log.e("reseau", "echec in requestSynchro",e)
+                            }
+                    }
+                })
+            }
+            while (ret.retour != 1) {
+                Thread.sleep(300)
+            }
         return listQuestion
     }
 
@@ -152,7 +168,7 @@ object Recuperation {
                 var toutesLesEntree: JSONArray? =null
                 Log.e("Response nombre", response.toString())
                 try {
-                    val strResponse : String? = response.body?.string()
+                    val strResponse : String = response.body!!.string()
 
                     val jsonstr = JSONObject(strResponse)
                     toutesLesEntree = jsonstr.getJSONArray("nombre")

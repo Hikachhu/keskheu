@@ -9,11 +9,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.keskheu.R
 import com.google.android.material.snackbar.Snackbar
+import com.keskheu.MainActivity
+import com.keskheu.R
 import com.keskheu.USERNAME
+import com.keskheu.Utils.toMD5
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -25,7 +26,7 @@ import java.io.IOException
 class SlideshowFragment : Fragment() {
 
     private lateinit var slideshowViewModel: SlideshowViewModel
-
+    private var ip="http://ns328061.ip-37-187-112.eu:5000"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,43 +37,24 @@ class SlideshowFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_slideshow, container, false)
 
         val textView: TextView = root.findViewById(R.id.Text_informatif)
-        slideshowViewModel.lu.observe(viewLifecycleOwner, Observer {
+        slideshowViewModel.lu.observe(viewLifecycleOwner, {
             textView.text = it
         })
 
-        val Username = root.findViewById<EditText>(R.id.Username)
-        val Mdp = root.findViewById<EditText>(R.id.Mdp)
+        val username = root.findViewById<EditText>(R.id.Username)
+        val mdp = root.findViewById<EditText>(R.id.Mdp)
 
-        val CreationAccount = root.findViewById<Button>(R.id.Creation)
-        val ConnectionAccount = root.findViewById<Button>(R.id.Connection)
+        val creationAccount = root.findViewById<Button>(R.id.Creation)
+        val connectionAccount = root.findViewById<Button>(R.id.Connection)
 
-        ConnectionAccount.setOnClickListener {
-            var username = Username.text.toString().trim()
-            var mdp= Mdp.text.toString().trim()
+        connectionAccount.setOnClickListener {
+            val nomUtilisateur = username.text.toString().trim()
+            val motdepasse= mdp.text.toString().trim().toMD5()
             val registrationForm1 = JSONObject()
             try {
-                registrationForm1.put("subject", "Connection");
-                registrationForm1.put("Username", username);
-                registrationForm1.put("Mdp", mdp);
-            } catch (e: JSONException) {
-                e.printStackTrace()
-            }
-
-            val body:RequestBody  = registrationForm1.toString()
-                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull());
-
-            postRequest("http://ns328061.ip-37-187-112.eu:5000", body, username);
-
-        }
-
-        CreationAccount.setOnClickListener {
-            var username = Username.text.toString().trim()
-            var mdp= Mdp.text.toString().trim()
-            val registrationForm1 = JSONObject()
-            try {
-                registrationForm1.put("subject", "Creation");
-                registrationForm1.put("Username", username);
-                registrationForm1.put("Mdp", mdp);
+                registrationForm1.put("subject", "Connection")
+                registrationForm1.put("Username", nomUtilisateur)
+                registrationForm1.put("Mdp", motdepasse)
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
@@ -80,16 +62,38 @@ class SlideshowFragment : Fragment() {
             val body:RequestBody  = registrationForm1.toString()
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-            postRequest("http://ns328061.ip-37-187-112.eu:5000", body, username);
+            postRequest(body, nomUtilisateur)
+
+
+        }
+
+        creationAccount.setOnClickListener {
+            val nomUtilisateur = username.text.toString().trim()
+            val motdepasse= mdp.text.toString().trim()
+            Log.e("MD5",motdepasse)
+            val registrationForm1 = JSONObject()
+            try {
+                registrationForm1.put("subject", "Creation")
+                registrationForm1.put("Username", nomUtilisateur)
+                registrationForm1.put("Mdp", motdepasse)
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+
+            val body:RequestBody  = registrationForm1.toString()
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+            postRequest(body, nomUtilisateur)
 
         }
 
         return root
     }
-    private fun postRequest(postUrl: String?, postBody: RequestBody?, username: String?) {
+
+    private fun postRequest(postBody: RequestBody?, username: String?) {
         val client = OkHttpClient()
         val request: Request = Request.Builder()
-            .url(postUrl.toString())
+            .url(ip)
             .post(postBody!!)
             .header("Accept", "application/json")
             .header("Content-Type", "application/json")
@@ -114,21 +118,15 @@ class SlideshowFragment : Fragment() {
                     }
                     if (responseString == "Invalide") {
 
-                        view?.let {
-                            Snackbar.make(it, "Mot de passe invalide", Snackbar.LENGTH_LONG)
-                                .setAction(
-                                    "Action",
-                                    null
-                                ).show()
-                        }
+                        view?.let {Snackbar.make(it, "Mot de passe invalide", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
                     } else {
-
                         view?.let {
                             if (responseString != null) {
                                 Snackbar.make(it, "Mot de passe Valide", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
                         }
                         if (username != null) {
                             USERNAME = username
+                            (activity as MainActivity).changeUsername()
                         }
 
                     }

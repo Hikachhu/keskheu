@@ -6,11 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.keskheu.database.AccesLocal
-import com.keskheu.api.Question
 import com.keskheu.R
+import com.keskheu.api.Question
+import com.keskheu.database.AccesLocal
 
 
 class RandomNumListAdapter(context: Context) : RecyclerView.Adapter<RecyclerViewHolder>() {
@@ -32,7 +33,14 @@ class RandomNumListAdapter(context: Context) : RecyclerView.Adapter<RecyclerView
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        if(Etat==0) holder.view.text = accesLocal.listeFils(0)[position].Contenu.toString()+"\nQuestion posée par: "+accesLocal.listeFils(0)[position].Username.toString()+"\nIl y a "+accesLocal.nombreDeRep( accesLocal.listeFils(0)[position].Fils)+" réponses disponibles"
+        val animation1 = AlphaAnimation(0.2f, 1.0f)
+        animation1.duration = 1000
+        animation1.startOffset = 1000
+        animation1.fillAfter = true
+        if(Etat==0) {
+            holder.view.text = accesLocal.listeFils(0)[position].Contenu.toString()+"\nQuestion posée par: "+accesLocal.listeFils(0)[position].Username.toString()+"\nIl y a "+accesLocal.nombreDeRep( accesLocal.listeFils(0)[position].Fils)+" réponses disponibles"
+            Log.e("Affichage","Affichage de "+accesLocal.listeFils(0)[position].Contenu.toString())
+        }
         else {
             enfantActuel=accesLocal.numFils(parentActuel,positionnement+1)
             Log.e("onBindViewHolder","On cherche les enfants de "+accesLocal.numFils(parentActuel,positionnement+1))
@@ -44,7 +52,6 @@ class RandomNumListAdapter(context: Context) : RecyclerView.Adapter<RecyclerView
 
     override fun getItemCount(): Int {
         val valeur:Int=accesLocal.getNumber(accesLocal.numFils(parentActuel,positionnement+1))
-        Log.e("Nombre Taille:","taille="+valeur+" Etat:"+Etat)
         return if(Etat==0) accesLocal.getNumber(0)
         else accesLocal.getNumber(accesLocal.numFils(parentActuel,positionnement+1))
     }
