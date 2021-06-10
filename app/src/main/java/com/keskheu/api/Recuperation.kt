@@ -18,9 +18,6 @@ object Recuperation {
     private var ipServer="http://ns328061.ip-37-187-112.eu:5000"
     private var DernierAppel=(System.currentTimeMillis()/1000).toInt()
     fun ping(): String {
-        while (DernierAppel+3<(System.currentTimeMillis()/1000).toInt()){
-            Thread.sleep(250)
-        }
         val recupAPI= RetourApi(0)
         val valeur=pingC(recupAPI)
         Log.e("Retour ping",valeur)

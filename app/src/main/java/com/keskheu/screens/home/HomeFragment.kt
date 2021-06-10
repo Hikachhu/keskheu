@@ -1,11 +1,8 @@
 package com.keskheu.screens.home
 
-import android.R.layout
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.os.StrictMode
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +12,7 @@ import android.view.animation.LayoutAnimationController
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -33,7 +31,6 @@ import drewcarlson.coingecko.CoinGeckoClient
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
-import java.net.URL
 
 
 class HomeFragment : Fragment() {
@@ -53,9 +50,18 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         Log.e("Affichage","Debut affichage Home")
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true /* enabled by default */) {
+                override fun handleOnBackPressed() {
+                    changeScreen(HomeFragment())
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         val root = inflater.inflate(R.layout.fragment_home, container, false)
+
         accesLocal = context?.let { AccesLocal(it) }!!
         accesLocal.suppressionTotal()
 
@@ -148,7 +154,6 @@ class HomeFragment : Fragment() {
             reponseQuestion.text="Répondre à la question"
         }
     }
-
 
 
 }
