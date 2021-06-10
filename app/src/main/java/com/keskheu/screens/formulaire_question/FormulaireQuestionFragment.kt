@@ -72,6 +72,7 @@ class FormulaireQuestionFragment : Fragment() {
                     1,
                     USERNAME
                 )
+                Log.e("Envoi question",questionUtilisation.toString())
                 val registrationForm1 = JSONObject()
                 try {
                     registrationForm1.put("subject", "ecrire")

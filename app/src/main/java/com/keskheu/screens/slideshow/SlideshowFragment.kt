@@ -10,17 +10,14 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
-import com.keskheu.MainActivity
 import com.keskheu.R
-import com.keskheu.USERNAME
 import com.keskheu.Utils.toMD5
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
+import com.keskheu.api.Recuperation
 
 
 class SlideshowFragment : Fragment() {
@@ -62,14 +59,14 @@ class SlideshowFragment : Fragment() {
             val body:RequestBody  = registrationForm1.toString()
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-            postRequest(body, nomUtilisateur)
+            view?.let { it1 -> Recuperation.demandeConnection(body, nomUtilisateur, it1) }
 
 
         }
 
         creationAccount.setOnClickListener {
             val nomUtilisateur = username.text.toString().trim()
-            val motdepasse= mdp.text.toString().trim()
+            val motdepasse= mdp.text.toString().trim().toMD5()
             Log.e("MD5",motdepasse)
             val registrationForm1 = JSONObject()
             try {
@@ -83,57 +80,10 @@ class SlideshowFragment : Fragment() {
             val body:RequestBody  = registrationForm1.toString()
                 .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
 
-            postRequest(body, nomUtilisateur)
+            view?.let { it1 -> Recuperation.demandeConnection(body, nomUtilisateur, it1) }
 
         }
 
         return root
-    }
-
-    private fun postRequest(postBody: RequestBody?, username: String?) {
-        val client = OkHttpClient()
-        val request: Request = Request.Builder()
-            .url(ip)
-            .post(postBody!!)
-            .header("Accept", "application/json")
-            .header("Content-Type", "application/json")
-            .build()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                call.cancel()
-                Log.d("FAIL", e.message.toString())
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-
-                try {
-                    val responseString: String? = response.body?.string()
-                    view?.let {
-                        if (responseString != null) {
-                            Snackbar.make(it, responseString, Snackbar.LENGTH_LONG).setAction(
-                                "Action",
-                                null
-                            ).show()
-                        }
-                    }
-                    if (responseString == "Invalide") {
-
-                        view?.let {Snackbar.make(it, "Mot de passe invalide", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
-                    } else {
-                        view?.let {
-                            if (responseString != null) {
-                                Snackbar.make(it, "Mot de passe Valide", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
-                        }
-                        if (username != null) {
-                            USERNAME = username
-                            (activity as MainActivity).changeUsername()
-                        }
-
-                    }
-                } catch (e: Exception) {
-
-                }
-            }
-        })
     }
 }

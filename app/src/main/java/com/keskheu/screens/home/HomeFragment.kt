@@ -89,15 +89,13 @@ class HomeFragment : Fragment() {
         }
         this.configureOnClickRecyclerView(textView)
         reponseQuestion.setOnClickListener {
-            arguments?.putInt("NumeroQuestion", enfantActuel)
             val registrationForm1 =  JSONObject()
             try {registrationForm1.put("subject", "lire_tous");}
             catch (e: JSONException) {e.printStackTrace();}
             listeQuestion=systemApi.requestSynchro()
             listeQuestion.forEach { accesLocal.ajout(it) }
             val fragment = FormulaireQuestionFragment()
-            val arguments = Bundle()
-            changeScreen(fragment, arguments)
+            changeScreen(fragment)
 
         }
 
@@ -117,8 +115,11 @@ class HomeFragment : Fragment() {
         }
         return root
     }
-    private fun changeScreen(fragment: Fragment, arguments : Bundle){
+    private fun changeScreen(fragment: Fragment){
+        val arguments = Bundle()
+        arguments.putInt("NumeroQuestion",enfantActuel)
         fragment.arguments = arguments
+        Log.e("Avant transaction",fragment.arguments.toString())
         parentFragmentManager.beginTransaction()
             .replace((requireView().parent as ViewGroup).id, fragment)
             .addToBackStack(null)

@@ -1,6 +1,10 @@
 package com.keskheu.api
 
 import android.util.Log
+import android.view.View
+import com.google.android.material.snackbar.Snackbar
+import com.keskheu.MainActivity
+import com.keskheu.USERNAME
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -104,26 +108,18 @@ object Recuperation {
 
                     override fun onResponse(call: Call, response: Response) {
                         try {
-                            val str_response = response.body!!.string()
-                            val jsonstr = JSONObject(str_response)
-                            val ToutsLesEntree: JSONArray = jsonstr.getJSONArray("resultat")
+                            val strResponse = response.body!!.string()
+                            val jsonstr = JSONObject(strResponse)
+                            val listeEntrees: JSONArray = jsonstr.getJSONArray("resultat")
                             try {
-                                for (i in 0 until ToutsLesEntree.length()) {
-                                    val Actual = ToutsLesEntree.getJSONArray(i)
-                                    val Parent: Int = Actual.getInt(0)
-                                    val Fils: Int = Actual.getInt(1)
-                                    val Contenu = Actual.getString(2)
-                                    val Rang: Int = Actual.getInt(3)
-                                    val Username: String? = Actual.getString(4)
-                                    listQuestion.add(
-                                        Question(
-                                            Parent,
-                                            Fils,
-                                            Contenu,
-                                            Rang,
-                                            Username
-                                        )
-                                    )
+                                for (i in 0 until listeEntrees.length()) {
+                                    val actuel = listeEntrees.getJSONArray(i)
+                                    val parent: Int = actuel.getInt(0)
+                                    val fils: Int = actuel.getInt(1)
+                                    val contenu = actuel.getString(2)
+                                    val rang: Int = actuel.getInt(3)
+                                    val username: String? = actuel.getString(4)
+                                    listQuestion.add(Question(parent,fils,contenu,rang,username))
 
                                 }
                                 ret.retour = 1
@@ -193,5 +189,55 @@ object Recuperation {
             Thread.sleep(300)
         }
         return numero
+    }
+
+    fun demandeConnection(postBody: RequestBody?, username: String?, view: View) {
+        val client = OkHttpClient()
+        val request: Request = Request.Builder()
+            .url(ipServer)
+            .post(postBody!!)
+            .header("Accept", "application/json")
+            .header("Content-Type", "application/json")
+            .build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                call.cancel()
+                Log.d("FAIL", e.message.toString())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+
+                try {
+                    val responseString: String? = response.body?.string()
+                    view.let {
+                        if (responseString != null) {
+                            Snackbar.make(it, responseString, Snackbar.LENGTH_LONG).setAction("Action",null).show()
+                        }
+                    }
+                    if (responseString == "Invalide") {
+
+                        view.let { Snackbar.make(it, "Mot de passe invalide", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
+                    } else if(responseString=="Valide"){
+                        view.let {
+                            Snackbar.make(it, "Mot de passe Valide", Snackbar.LENGTH_LONG).setAction("Action",null).show()
+                        }
+                        if (username != null) {
+                            USERNAME = username
+                            val main= MainActivity()
+                            main.changeUsername()
+                        }
+
+                    }else if(responseString=="AlreadyUse"){
+                        view.let { Snackbar.make(it, "Username deja utilisé", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
+                    }
+                    else{
+                        view.let { Snackbar.make(it, responseString.toString(), Snackbar.LENGTH_LONG).setAction("Action",null).show()}
+
+                    }
+                } catch (e: Exception) {
+
+                }
+            }
+        })
     }
 }
