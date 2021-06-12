@@ -25,7 +25,15 @@ class DirectionConnection : Fragment() {
         val accesCompte=root.findViewById(R.id.accesCompte) as Button
         val seConnecter=root.findViewById(R.id.seConnecter) as Button
         accesCompte.setOnClickListener {
-            changeScreen(ConnecteFragment())
+            if(IdUser==-1){
+                view?.let { it1 ->
+                    com.google.android.material.snackbar.Snackbar.make(
+                        it1,"Veillez vous connecter avec l'autre bouton",
+                        com.google.android.material.snackbar.Snackbar.LENGTH_LONG).setAction("Action", null).show()
+                }
+            }else{
+                changeScreen(ConnecteFragment())
+            }
         }
         seConnecter.setOnClickListener {
             changeScreen(ConnectionFragment())

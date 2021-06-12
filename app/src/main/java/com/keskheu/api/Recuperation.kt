@@ -34,7 +34,14 @@ object Recuperation {
 
     fun requestListPM(account1:Int,): ArrayList<PrivateMessage>{
         val recupAPI = RetourApi(0)
-        return requestListPMC(account1,recupAPI)
+        var list=requestListPMC(account1,recupAPI)
+        Log.e("listAccount", list.toString())
+        return list
+    }
+
+    fun listAccount(): ArrayList<String>{
+        val recupAPI = RetourApi(0)
+        return listAccountC(recupAPI)
     }
 
     fun demandeConnection(postBody: RequestBody?, username: String?, view: View): Int {
@@ -129,44 +136,97 @@ object Recuperation {
             .header("Content-Type", "application/json")
             .addHeader("Connection","close")
             .build()
-            client.run {
-                newCall(request).enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        call.cancel()
-                        Log.d("FAIL", e.message.toString())
-                    }
+        client.run {
+            newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    call.cancel()
+                    Log.d("FAIL", e.message.toString())
+                }
 
-                    override fun onResponse(call: Call, response: Response) {
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        val strResponse = response.body!!.string()
+                        val jsonstr = JSONObject(strResponse)
+                        val listeEntrees: JSONArray = jsonstr.getJSONArray("resultat")
                         try {
-                            val strResponse = response.body!!.string()
-                            val jsonstr = JSONObject(strResponse)
-                            val listeEntrees: JSONArray = jsonstr.getJSONArray("resultat")
-                            try {
-                                for (i in 0 until listeEntrees.length()) {
-                                    val actuel = listeEntrees.getJSONArray(i)
-                                    val parent: Int = actuel.getInt(0)
-                                    val fils: Int = actuel.getInt(1)
-                                    val contenu = actuel.getString(2)
-                                    val rang: Int = actuel.getInt(3)
-                                    val username: String? = actuel.getString(4)
-                                    listQuestion.add(Question(parent,fils,contenu,rang,username))
+                            for (i in 0 until listeEntrees.length()) {
+                                val actuel = listeEntrees.getJSONArray(i)
+                                val parent: Int = actuel.getInt(0)
+                                val fils: Int = actuel.getInt(1)
+                                val contenu = actuel.getString(2)
+                                val rang: Int = actuel.getInt(3)
+                                val username: String? = actuel.getString(4)
+                                listQuestion.add(Question(parent,fils,contenu,rang,username))
 
-                                }
-                                ret.retour = 1
-                            } catch (e: JSONException) {
-                                e.printStackTrace()
                             }
-                        } catch (e: Exception) {
                             ret.retour = 1
-                            Log.e("reseau", "echec in requestSynchro",e)
-                            }
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                    } catch (e: Exception) {
+                        ret.retour = 1
+                        Log.e("reseau", "echec in requestSynchro",e)
                     }
-                })
-            }
-            while (ret.retour != 1) {
-                Thread.sleep(300)
-            }
+                }
+            })
+        }
+        while (ret.retour != 1) {
+            Thread.sleep(300)
+        }
         return listQuestion
+    }
+
+    private fun  listAccountC(ret:RetourApi): ArrayList<String> {
+        ret.retour=0
+        val listAccount = arrayListOf<String>()
+        val registrationForm1  =  JSONObject()
+        try {registrationForm1.put("subject", "listAccount");}
+        catch (e: JSONException) {e.printStackTrace();}
+        val body: RequestBody = registrationForm1.toString()
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val client = OkHttpClient()
+
+
+        val request: Request = Request.Builder()
+            .url(ipServer)
+            .post(body)
+            .header("Accept", "application/json")
+            .header("Content-Type", "application/json")
+            .addHeader("Connection","close")
+            .build()
+        client.run {
+            newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    call.cancel()
+                    Log.d("FAIL", e.message.toString())
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        val strResponse = response.body!!.string()
+                        val jsonstr = JSONObject(strResponse)
+                        val listeEntrees: JSONArray = jsonstr.getJSONArray("account")
+                        try {
+                            for (i in 0 until listeEntrees.length()) {
+                                val actuel = listeEntrees.getJSONArray(i)
+                                listAccount.add(actuel.getString(0))
+
+                            }
+                            ret.retour = 1
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                    } catch (e: Exception) {
+                        ret.retour = 1
+                        Log.e("reseau", "echec in requestSynchro",e)
+                    }
+                }
+            })
+        }
+        while (ret.retour != 1) {
+            Thread.sleep(300)
+        }
+        return listAccount
     }
      fun  requestListPMC(account1:Int,ret:RetourApi): ArrayList<PrivateMessage> {
 
@@ -206,11 +266,12 @@ object Recuperation {
                             for (i in 0 until listeEntrees.length()) {
 
                                 val actuel = listeEntrees.getJSONArray(i)
-                                val expediteur: String = actuel.getString(2)
-                                val message = actuel.getString(3)
-                                listPrivateMessage.add(PrivateMessage(expediteur,message))
+                                val account1: String = actuel.getString(0)
+                                val account2: String = actuel.getString(1)
+                                val message = actuel.getString(2)
+                                listPrivateMessage.add(PrivateMessage(account1,account2,message))
                                 Log.e("Liste private message:",
-                                    "expediteur =$expediteur message=$message"
+                                    "account1 =$account1 account2 =$account2 message=$message"
                                 )
 
                             }

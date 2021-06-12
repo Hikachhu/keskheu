@@ -3,9 +3,10 @@ package com.keskheu.api
 import android.os.Parcel
 import android.os.Parcelable
 
-data class PrivateMessage(var expediteur:String?,var textMessage: String?) :
+data class PrivateMessage(var account1:String?,var account2: String?,var textMessage: String?) :
     Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
         parcel.readString(),
         parcel.readString())
 

@@ -1,6 +1,8 @@
 package com.keskheu.screens.formulaire_question
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -10,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -30,6 +34,7 @@ class FormulaireQuestionFragment : Fragment() {
     private lateinit var galleryViewModel: FormulaireQuestionViewModel
     private lateinit var accesLocal : AccesLocal
     private var numeroQuestion:Int = 0
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -55,10 +60,7 @@ class FormulaireQuestionFragment : Fragment() {
         }
 
         fichierJoindre.setOnClickListener{
-            val intent = Intent()
-            intent.type = "*/*"
-            intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(intent, 0)
+
         }
 
         boutton.setOnClickListener {
@@ -96,6 +98,7 @@ class FormulaireQuestionFragment : Fragment() {
         }
         return root
     }
+
     private fun postRequest(postUrl: String?, postBody: RequestBody?) {
         val client = OkHttpClient()
         val request: Request = Request.Builder()
@@ -147,5 +150,9 @@ class FormulaireQuestionFragment : Fragment() {
                 }
             }
         })
+    }
+
+    companion object {
+        private const val PICK_PDF_FILE = 2
     }
 }
