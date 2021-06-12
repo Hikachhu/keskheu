@@ -27,11 +27,28 @@
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.keskheu.screens.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" >
+        android:name="com.keskheu.screens.connection.ConnectionFragment"
+        android:label="@string/menu_slideshow">
         <action
-            android:id="@+id/action_nav_slideshow_to_nav_home"
+            android:id="@+id/action_nav_slideshow_to_directionConnection2"
+            app:destination="@id/directionConnection2" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_Connecte"
+        android:name="com.keskheu.ConnecteFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_connecte" >
+        <action
+            android:id="@+id/action_nav_Connecte_to_directionConnection2"
+            app:destination="@id/directionConnection2" />
+    </fragment>
+    <fragment
+        android:id="@+id/directionConnection2"
+        android:name="com.keskheu.DirectionConnection"
+        android:label="fragment_direction_connection"
+        tools:layout="@layout/fragment_direction_connection" >
+        <action
+            android:id="@+id/action_directionConnection2_to_nav_home"
             app:destination="@id/nav_home" />
     </fragment>
 </navigation>

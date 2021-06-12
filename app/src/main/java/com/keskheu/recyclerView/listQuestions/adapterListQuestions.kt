@@ -1,4 +1,4 @@
-package com.keskheu.recyclerView
+package com.keskheu.recyclerView.listQuestions
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -14,7 +14,7 @@ import com.keskheu.api.Question
 import com.keskheu.database.AccesLocal
 
 
-class RandomNumListAdapter(context: Context) : RecyclerView.Adapter<RecyclerViewHolder>() {
+class adapterListQuestions(context: Context) : RecyclerView.Adapter<RecyclerViewHolderListQuestion>() {
 
     private var accesLocal = AccesLocal(context)
     var parentActuel=0
@@ -23,16 +23,16 @@ class RandomNumListAdapter(context: Context) : RecyclerView.Adapter<RecyclerView
     var Etat=0
 
     override fun getItemViewType(position: Int): Int {
-        return R.layout.frame_textview
+        return R.layout.frame_textview_listquestions
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolderListQuestion {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return RecyclerViewHolder(view)
+        return RecyclerViewHolderListQuestion(view)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerViewHolderListQuestion, position: Int) {
         val animation1 = AlphaAnimation(0.2f, 1.0f)
         animation1.duration = 1000
         animation1.startOffset = 1000

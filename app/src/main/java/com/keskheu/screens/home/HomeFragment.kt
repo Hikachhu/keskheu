@@ -15,7 +15,6 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -23,12 +22,9 @@ import com.keskheu.R
 import com.keskheu.api.Question
 import com.keskheu.api.Recuperation
 import com.keskheu.database.AccesLocal
-import com.keskheu.recyclerView.ItemClickSupport
-import com.keskheu.recyclerView.RandomNumListAdapter
+import com.keskheu.recyclerView.listQuestions.ItemClickSupportListQuestions
+import com.keskheu.recyclerView.listQuestions.adapterListQuestions
 import com.keskheu.screens.formulaire_question.FormulaireQuestionFragment
-import com.squareup.picasso.Picasso
-import drewcarlson.coingecko.CoinGeckoClient
-import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -77,22 +73,13 @@ class HomeFragment : Fragment() {
         if(accesLocal.number ==0) {accesLocal.ajout(Question(0, 1, "Quest ce que cette app ?", 0,"ADMINN"))}
         recyclerView = root.findViewById(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(root.context)
-        var adapter =context?.applicationContext?.let { RandomNumListAdapter(it) }
+        var adapter =context?.applicationContext?.let { adapterListQuestions(it) }
         recyclerView.adapter = adapter
         val resId: Int =R.anim.layout_animation_fall_down
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation( context, resId)
         recyclerView.layoutAnimation = animation
 
-        lifecycleScope.launch {
-            val data = CoinGeckoClient.create()
 
-            try {
-                Picasso.with(context).load("").into(imageAffiche);
-            } catch (e: Exception) {
-                Log.e("Error Message", e.message.toString())
-                e.printStackTrace()
-            }
-        }
         this.configureOnClickRecyclerView(textView)
         reponseQuestion.setOnClickListener {
             val registrationForm1 =  JSONObject()
@@ -121,7 +108,7 @@ class HomeFragment : Fragment() {
         }
         return root
     }
-    private fun changeScreen(fragment: Fragment){
+    fun changeScreen(fragment: Fragment){
         val arguments = Bundle()
         arguments.putInt("NumeroQuestion",enfantActuel)
         fragment.arguments = arguments
@@ -141,11 +128,11 @@ class HomeFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun configureOnClickRecyclerView(textView: TextView) {
-        ItemClickSupport.addTo(recyclerView, R.layout.frame_textview).setOnItemClickListener { recyclerView, position, _ ->
+        ItemClickSupportListQuestions.addTo(recyclerView, R.layout.frame_textview_listquestions).setOnItemClickListener { recyclerView, position, _ ->
 
-            (recyclerView.adapter as RandomNumListAdapter?)?.Etat=1
-            (recyclerView.adapter as RandomNumListAdapter?)?.positionnement=position
-            (recyclerView.adapter as RandomNumListAdapter?)?.parentActuel=parentActuel
+            (recyclerView.adapter as adapterListQuestions?)?.Etat=1
+            (recyclerView.adapter as adapterListQuestions?)?.positionnement=position
+            (recyclerView.adapter as adapterListQuestions?)?.parentActuel=parentActuel
             recyclerView.adapter?.notifyDataSetChanged()
 
             textView.text=accesLocal.rcmpNumbers(accesLocal.numFils(parentActuel, position + 1)).toString()

@@ -1,22 +1,55 @@
 package com.keskheu.api
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.View
+import android.widget.TextView
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.keskheu.IdUser
 import com.keskheu.MainActivity
+import com.keskheu.R
 import com.keskheu.USERNAME
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.notify
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
 
+@SuppressLint("StaticFieldLeak")
 object Recuperation {
+
     private var ipServer="http://ns328061.ip-37-187-112.eu:5000"
     private var DernierAppel=(System.currentTimeMillis()/1000).toInt()
+
+    fun requestListPM(account1:Int,): ArrayList<PrivateMessage>{
+        val recupAPI = RetourApi(0)
+        return requestListPMC(account1,recupAPI)
+    }
+
+    fun demandeConnection(postBody: RequestBody?, username: String?, view: View): Int {
+        val recupAPI=RetourApi(0)
+        demandeConnectionC(postBody,username,view,recupAPI)
+        while(recupAPI.retour==0){
+            Thread.sleep(300)
+        }
+        return if(recupAPI.retour==2){
+            0
+        } else {
+            1
+        }
+    }
+
     fun ping(): String {
         val recupAPI= RetourApi(0)
         val valeur=pingC(recupAPI)
@@ -135,6 +168,73 @@ object Recuperation {
             }
         return listQuestion
     }
+     fun  requestListPMC(account1:Int,ret:RetourApi): ArrayList<PrivateMessage> {
+
+        val listPrivateMessage = arrayListOf<PrivateMessage>()
+        val registrationForm1  =  JSONObject()
+        try {
+            registrationForm1.put("subject", "RecupPM");
+            registrationForm1.put("Account1", account1)
+        }
+        catch (e: JSONException) {e.printStackTrace();}
+        val body: RequestBody = registrationForm1.toString()
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val client = OkHttpClient()
+
+
+        val request: Request = Request.Builder()
+            .url(ipServer)
+            .post(body)
+            .header("Accept", "application/json")
+            .header("Content-Type", "application/json")
+            .addHeader("Connection","close")
+            .build()
+        client.run {
+            newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    call.cancel()
+                    Log.d("FAIL", e.message.toString())
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        val strResponse = response.body!!.string()
+                        val jsonstr = JSONObject(strResponse)
+
+                        val listeEntrees: JSONArray = jsonstr.getJSONArray("resultat")
+                        try {
+                            for (i in 0 until listeEntrees.length()) {
+
+                                val actuel = listeEntrees.getJSONArray(i)
+                                val expediteur: String = actuel.getString(2)
+                                val message = actuel.getString(3)
+                                listPrivateMessage.add(PrivateMessage(expediteur,message))
+                                Log.e("Liste private message:",
+                                    "expediteur =$expediteur message=$message"
+                                )
+
+                            }
+                            ret.retour=1
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+
+                            ret.retour=1
+                        }
+
+
+                    } catch (e: Exception) {
+
+                        ret.retour=1
+                        Log.e("reseau", "echec in requestSynchro",e)
+                    }
+                }
+            })
+        }
+         while (ret.retour != 1) {
+             Thread.sleep(300)
+         }
+        return listPrivateMessage
+    }
 
     private fun requestNumberC(ret:RetourApi) :Int{
         ret.retour=0
@@ -188,7 +288,12 @@ object Recuperation {
         return numero
     }
 
-    fun demandeConnection(postBody: RequestBody?, username: String?, view: View) {
+    private fun demandeConnectionC(
+        postBody: RequestBody?,
+        username: String?,
+        view: View,
+        ret: RetourApi
+    ) {
         val client = OkHttpClient()
         val request: Request = Request.Builder()
             .url(ipServer)
@@ -202,37 +307,112 @@ object Recuperation {
                 Log.d("FAIL", e.message.toString())
             }
 
+            @SuppressLint("LongLogTag")
             override fun onResponse(call: Call, response: Response) {
 
                 try {
-                    val responseString: String? = response.body?.string()
+                    val responseString: Int? = response.body?.string()?.toInt()
                     view.let {
                         if (responseString != null) {
-                            Snackbar.make(it, responseString, Snackbar.LENGTH_LONG).setAction("Action",null).show()
+                            Snackbar.make(it, responseString.toString(), Snackbar.LENGTH_LONG).setAction("Action",null).show()
                         }
                     }
-                    if (responseString == "Invalide") {
+                    if (responseString != null) {
+                        when {
+                            responseString==-1 -> {
 
-                        view.let { Snackbar.make(it, "Mot de passe invalide", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
-                    } else if(responseString=="Valide"){
-                        view.let {
-                            Snackbar.make(it, "Mot de passe Valide", Snackbar.LENGTH_LONG).setAction("Action",null).show()
-                        }
-                        if (username != null) {
-                            USERNAME = username
-                            val main= MainActivity()
-                            main.changeUsername()
-                        }
+                                view.let { Snackbar.make(it, "Mot de passe invalide", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
+                                ret.retour=1
 
-                    }else if(responseString=="AlreadyUse"){
-                        view.let { Snackbar.make(it, "Username deja utilisé", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
+                            }
+                            responseString>0 -> {
+                                view.let {
+                                    Snackbar.make(it, "Mot de passe Valide", Snackbar.LENGTH_LONG).setAction("Action",null).show()
+                                    if (username != null) {
+                                        USERNAME = username
+                                        IdUser=responseString
+                                        Log.e("Changement IdUser","Nouvel id = $IdUser")
+                                        ret.retour=2
+                                    }
+                                }
+
+
+                            }
+                            responseString==-2 -> {
+                                view.let { Snackbar.make(it, "Username deja utilisé", Snackbar.LENGTH_LONG).setAction("Action",null).show()}
+                                ret.retour=1
+                            }
+                            else -> {
+                                view.let { Snackbar.make(it, responseString.toString(), Snackbar.LENGTH_LONG).setAction("Action",null).show()}
+                                ret.retour=1
+
+                            }
+                        }
                     }
-                    else{
-                        view.let { Snackbar.make(it, responseString.toString(), Snackbar.LENGTH_LONG).setAction("Action",null).show()}
 
+
+                } catch (e: Exception) {
+                    Log.e("Erreur dans la connection",e.toString())
+                    ret.retour=1
+                }
+            }
+        })
+    }
+
+
+
+     fun insertPM(account1:String,account2: Int,message:String,view: View) {
+        val registrationForm1 = JSONObject()
+        try {
+            registrationForm1.put("subject", "InsertPM")
+            registrationForm1.put("Account1", account1)
+            registrationForm1.put("Account2", account2)
+            registrationForm1.put("Message", message)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        val body: RequestBody = registrationForm1.toString()
+            .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        val client = OkHttpClient()
+        val request: Request = Request.Builder()
+            .url(ipServer)
+            .post(body)
+            .header("Accept", "application/json")
+            .header("Content-Type", "application/json")
+            .build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                call.cancel()
+                Log.d("FAIL", e.message.toString())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                try {
+
+                    when (val responseString: String? = response.body?.string()) {
+                        "OK" -> {
+                            view?.let {
+                                Snackbar.make(
+                                    it,
+                                    "yes|$responseString",
+                                    Snackbar.LENGTH_LONG
+                                ).setAction("Action", null).show()
+                            }
+                        }
+
+                        else -> {
+                            view?.let {
+                                Snackbar.make(
+                                    it,
+                                    "other|$responseString",
+                                    Snackbar.LENGTH_LONG
+                                ).setAction("Action", null).show()
+                            }
+                        }
                     }
                 } catch (e: Exception) {
-
+                    e.printStackTrace()
                 }
             }
         })

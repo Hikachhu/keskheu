@@ -44,4 +44,12 @@
     <string name="informationapplication">InformationApplication</string>
     <string name="entrez_un_mdp">Entrez un mdp</string>
     <string name="joindre_un_fichier">Joindre un fichier</string>
+    <string name="veuillez_patienter">Veuillez patienter</string>
+    <string name="votre_compte">Votre compte</string>
+    <string name="acc_der_a_son_compte">Accéder a son compte</string>
+    <string name="se_connecter">Se connecter</string>
+    <string name="vos_messages_priv_es">Vos messages privées:</string>
+    <string name="envoyer">Envoyer</string>
+    <string name="message">Message</string>
+    <string name="destinataire">Destinataire :</string>
 </resources>

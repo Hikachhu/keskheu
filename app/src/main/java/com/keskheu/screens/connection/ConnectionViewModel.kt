@@ -1,4 +1,4 @@
-package com.keskheu.screens.slideshow
+package com.keskheu.screens.connection
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import com.keskheu.database.AccesLocal
 import com.keskheu.api.Question
 
-class SlideshowViewModel(application:Application) : AndroidViewModel(application) {
+class ConnectionViewModel(application:Application) : AndroidViewModel(application) {
 
 
     private var accesLocal : AccesLocal

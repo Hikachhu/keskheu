@@ -6,7 +6,7 @@
     android:layout_margin="8dp">
 
     <TextView
-        android:id="@+id/randomText"
+        android:id="@+id/randomText_listQuestions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:text="@string/headRecyclerView" />
