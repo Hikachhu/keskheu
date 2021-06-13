@@ -66,7 +66,7 @@ class HomeFragment : Fragment() {
         val imageAffiche: ImageView = root.findViewById(R.id.imageActuel)
         reponseQuestion = root.findViewById(R.id.ReponseQuestion)
         val textView: TextView = root.findViewById(R.id.text_home)
-        textView.text="Bienvenu sur Kesheu"
+        textView.text=""
         listeQuestion=systemApi.requestSynchro()
         listeQuestion.forEach { accesLocal.ajout(it) }
 

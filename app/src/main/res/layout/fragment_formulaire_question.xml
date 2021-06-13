@@ -1,78 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="projet.com.projet.ui.gallery.GalleryFragment">
 
-    <Button
-        android:id="@+id/button_entree_utlisateur"
-        android:layout_width="110dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="153dp"
-        android:layout_marginEnd="148dp"
-        android:layout_marginBottom="24dp"
-        android:text="@string/Boutton_Utilisateur"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fichierJoint" />
-
-    <EditText
-        android:id="@+id/Question_utilisateur"
-        style="@style/Widget.AppCompat.EditText"
-        android:layout_width="243dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="24dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/action_EntreeUser"
-        app:layout_constraintBottom_toTopOf="@+id/Reponse_Serveur"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_gallery"
-        android:importantForAutofill="no" />
-
-    <TextView
-        android:id="@+id/text_gallery"
-        android:layout_width="252dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="111dp"
-        android:layout_marginEnd="75dp"
-        android:layout_marginBottom="576dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/Reponse_Serveur"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="179dp"
-        android:layout_marginEnd="174dp"
-        android:text="@string/textview"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/fichierJoint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Question_utilisateur" />
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:paddingTop="16dp">
 
-    <Button
-        android:id="@+id/fichierJoint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="121dp"
-        android:layout_marginEnd="122dp"
-        android:text="@string/joindre_un_fichier"
-        app:layout_constraintBottom_toTopOf="@+id/button_entree_utlisateur"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Reponse_Serveur" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/text_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="100dp"
+            android:layout_marginTop="50dp"
+            android:textAllCaps="true"
+            android:textSize="16sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Shrine.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/action_EntreeUser">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/Question_utilisateur"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/Reponse_Serveur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/textview"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/fichierJoint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Question_utilisateur" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_entree_utlisateur"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/Boutton_Utilisateur"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fichierJoint"
+                style="@style/Widget.Shrine.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_toStartOf="@id/button_entree_utlisateur"
+                android:layout_toLeftOf="@id/button_entree_utlisateur"
+                android:text="@string/joindre_un_fichier"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</ScrollView>

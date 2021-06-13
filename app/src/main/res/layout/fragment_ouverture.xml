@@ -7,96 +7,88 @@
     android:layout_height="match_parent"
     tools:context=".BlankFragment">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="180dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="136dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="136dp"
-        android:layout_marginBottom="56dp"
-        android:layout_weight="1"
-        android:text="@string/bienvenu_sur_keskheu"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.146"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="37dp"
-        android:layout_marginEnd="37dp"
-        android:layout_weight="1"
-        android:text="@string/l_cran_d_accueil_permet_de_voir_la_liste_des_questions"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="56dp"
-        android:layout_marginBottom="24dp"
-        android:layout_weight="1"
-        android:text="@string/pour_voir_les_r_ponses_cliquez_sur_une_question"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="20dp"
+            app:srcCompat="@mipmap/ic_launcher_keskeu" />
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="339dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="1"
-        android:text="@string/pour_poster_une_question_ou_une_r_ponse_veuillez_vous_connectez"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/textView7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="100dp"
+            android:text="@string/bienvenu_sur_keskheu"
+            android:textAllCaps="true"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="49dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="61dp"
-        android:layout_weight="1"
-        android:text="@string/appuyez_pour_continuer_et_acc_der_l_application"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/buttonAccesAppli"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="50dp">
 
-    <Button
-        android:id="@+id/buttonAccesAppli"
-        android:layout_width="230dp"
-        android:layout_height="88dp"
-        android:layout_marginStart="90dp"
-        android:layout_marginEnd="91dp"
-        android:layout_marginBottom="145dp"
-        android:layout_weight="1"
-        android:text="@string/acc_der_keskheu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/l_cran_d_accueil_permet_de_voir_la_liste_des_questions"
+                android:paddingBottom="10dp"
+                android:textSize="16dp"/>
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pour_voir_les_r_ponses_cliquez_sur_une_question"
+                android:paddingBottom="10dp"
+                android:textSize="16dp"/>
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pour_poster_une_question_ou_une_r_ponse_veuillez_vous_connectez"
+                android:paddingBottom="10dp"
+                android:textSize="16dp"/>
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/appuyez_pour_continuer_et_acc_der_l_application"
+                android:paddingBottom="10dp"
+                android:textSize="16dp"/>
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonAccesAppli"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/acc_der_keskheu"/>
+        </RelativeLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
