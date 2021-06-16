@@ -1,6 +1,5 @@
 package com.keskheu.screens.formulaire_question
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -12,13 +11,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.keskheu.R
 import com.keskheu.USERNAME
+import com.keskheu.UploaderFile
 import com.keskheu.api.Question
 import com.keskheu.database.AccesLocal
 import okhttp3.*
@@ -40,6 +39,7 @@ class FormulaireQuestionFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        var uploader = UploaderFile()
         galleryViewModel = ViewModelProvider(this).get(FormulaireQuestionViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_formulaire_question, container, false)
         val textView: TextView = root.findViewById(R.id.text_gallery)
@@ -60,7 +60,6 @@ class FormulaireQuestionFragment : Fragment() {
         }
 
         fichierJoindre.setOnClickListener{
-
         }
 
         boutton.setOnClickListener {
@@ -152,7 +151,17 @@ class FormulaireQuestionFragment : Fragment() {
         })
     }
 
-    companion object {
-        private const val PICK_PDF_FILE = 2
+
+    fun selectImage() {
+        var intent=Intent()
+        intent.type = "*/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.action = Intent.ACTION_GET_CONTENT
+        activity?.startActivity(intent)
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Picture"),
+            UploaderFile.SELECT_MULTIPLE_IMAGES
+        )
+        Log.e("Image","chemin=${UploaderFile.selectedImagesPaths}")
     }
 }

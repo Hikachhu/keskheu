@@ -32,9 +32,9 @@ object Recuperation {
     private var ipServer="http://ns328061.ip-37-187-112.eu:5000"
     private var DernierAppel=(System.currentTimeMillis()/1000).toInt()
 
-    fun requestListPM(account1:Int,): ArrayList<PrivateMessage>{
+    fun requestListPM(account1:Int,account2: Int): ArrayList<PrivateMessage>{
         val recupAPI = RetourApi(0)
-        var list=requestListPMC(account1,recupAPI)
+        var list=requestListPMC(account1,account2,recupAPI)
         Log.e("listAccount", list.toString())
         return list
     }
@@ -228,13 +228,14 @@ object Recuperation {
         }
         return listAccount
     }
-     fun  requestListPMC(account1:Int,ret:RetourApi): ArrayList<PrivateMessage> {
+     private fun  requestListPMC(account1:Int, account2: Int, ret:RetourApi): ArrayList<PrivateMessage> {
 
         val listPrivateMessage = arrayListOf<PrivateMessage>()
         val registrationForm1  =  JSONObject()
         try {
             registrationForm1.put("subject", "RecupPM");
             registrationForm1.put("Account1", account1)
+            registrationForm1.put("Account2", account2)
         }
         catch (e: JSONException) {e.printStackTrace();}
         val body: RequestBody = registrationForm1.toString()

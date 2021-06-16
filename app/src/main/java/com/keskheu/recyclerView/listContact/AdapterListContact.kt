@@ -1,4 +1,4 @@
-package com.keskheu.recyclerView.listPM
+package com.keskheu.recyclerView.listContact
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -14,28 +14,26 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.keskheu.R
-import com.keskheu.USERNAME
-import com.keskheu.api.PrivateMessage
 import com.keskheu.database.AccesLocal
 
 
-class AdapterListPM(context: Context, listPrivateMessage: ArrayList<PrivateMessage>) : RecyclerView.Adapter<RecyclerViewHolderListPM>() {
+class AdapterListContact(context: Context, listPrivateMessage: ArrayList<String>) : RecyclerView.Adapter<RecyclerViewHolderListContact>() {
 
     private var accesLocal = AccesLocal(context)
-    var listPM= listPrivateMessage
+    private var listPM= listPrivateMessage
 
     override fun getItemViewType(position: Int): Int {
         return R.layout.frame_textview_listpm
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolderListPM {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolderListContact {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return RecyclerViewHolderListPM(view)
+        return RecyclerViewHolderListContact(view)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("SetTextI18n", "ResourceAsColor")
-    override fun onBindViewHolder(holder: RecyclerViewHolderListPM, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerViewHolderListContact, position: Int) {
         Log.e("Passage",position.toString())
         try {
             val animation1 = AlphaAnimation(0.2f, 1.0f)
@@ -43,13 +41,10 @@ class AdapterListPM(context: Context, listPrivateMessage: ArrayList<PrivateMessa
             animation1.startOffset = 1000
             animation1.fillAfter = true
             Log.e("onBindViewHolder", listPM[position].toString())
-            Log.e("Diff affichage", "Username="+USERNAME+" account2= "+listPM[position].account2+" comparaison= "+(USERNAME == listPM[position].account2))
-            var text: String = if (USERNAME == listPM[position].account2)
-                "<font color='#7E4BC7'>"+listPM[position].textMessage+"</font> de "+USERNAME
-            else {
-                "<font color='#6FEA4E'>"+listPM[position].textMessage+"</font> de "+listPM[position].account2
-            }
+
+            var text: String = listPM[position]
             holder.view.text =Html.fromHtml(text,FROM_HTML_MODE_LEGACY)
+
         }catch (e:Exception){
             Log.e("ERROR",e.toString())
         }

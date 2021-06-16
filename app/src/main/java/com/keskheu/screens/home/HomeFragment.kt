@@ -73,7 +73,7 @@ class HomeFragment : Fragment() {
         if(accesLocal.number ==0) {accesLocal.ajout(Question(0, 1, "Quest ce que cette app ?", 0,"ADMINN"))}
         recyclerView = root.findViewById(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(root.context)
-        var adapter =context?.applicationContext?.let { adapterListQuestions(it) }
+        val adapter =context?.applicationContext?.let { adapterListQuestions(it) }
         recyclerView.adapter = adapter
         val resId: Int =R.anim.layout_animation_fall_down
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation( context, resId)

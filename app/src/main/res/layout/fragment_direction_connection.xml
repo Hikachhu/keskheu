@@ -17,6 +17,16 @@
         android:padding="24dp"
         android:paddingTop="100dp"
         android:layout_marginTop="250dp">
+
+        <Button
+            android:id="@+id/seConnecter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/se_connecter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <Button
             android:id="@+id/accesCompte"
             android:layout_width="match_parent"
@@ -27,13 +37,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <Button
-            android:id="@+id/seConnecter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/se_connecter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
     </LinearLayout>
 </ScrollView>

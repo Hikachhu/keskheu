@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -44,6 +45,13 @@ class ConnectionFragment : Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_slideshow, container, false)
 
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true /* enabled by default */) {
+                override fun handleOnBackPressed() {
+                    changeScreen(DirectionConnection())
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         val textView: TextView = root.findViewById(R.id.Text_informatif)
         connectionViewModel.lu.observe(viewLifecycleOwner, {
             textView.text = it
@@ -133,7 +141,7 @@ class ConnectionFragment : Fragment() {
     }
     private fun changeScreen(fragment: Fragment){
         parentFragmentManager.beginTransaction()
-            .add((requireView().parent as ViewGroup).id, fragment)
+            .replace((requireView().parent as ViewGroup).id, fragment)
             .addToBackStack(null)
             .commit()
     }
